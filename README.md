@@ -66,6 +66,3 @@ For the contact form to send emails, set:
 RESEND_API_KEY=your_resend_api_key
 ```
 
-## License
-
-MIT
