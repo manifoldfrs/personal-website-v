@@ -39,7 +39,7 @@ export async function submitContactForm(
     }
 
     await resend.emails.send({
-      from: "Contact Form <onboarding@resend.dev>",
+      from: "Contact Form <contact@hbb.dev>",
       to: "faris@duck.com",
       subject: `New message from ${name}`,
       text: `
