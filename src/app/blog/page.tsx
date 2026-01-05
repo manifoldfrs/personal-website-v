@@ -42,7 +42,7 @@ async function AllPosts() {
     getAllPosts.pipe(Effect.orElseSucceed(() => []))
   )
 
-  return <PostList posts={posts} showHeader={true} />
+  return <PostList posts={posts} showHeader={false} />
 }
 
 export default function BlogPage() {
