@@ -23,7 +23,7 @@ export function PostList({ posts, showHeader = true }: PostListProps) {
   }
 
   return (
-    <section className="relative py-32 px-8 md:px-12 md:py-24">
+    <section className="relative pt-32 pb-0 px-8 md:px-12 md:pt-24">
       {/* Section Header */}
       {showHeader && (
         <motion.div
