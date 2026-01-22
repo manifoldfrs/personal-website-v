@@ -66,7 +66,7 @@ export default function AboutPage() {
                 },
                 {
                   title: "What parts of Christianity could use better explanations?",
-                  description: "Critical rationalism for the win.",
+                  description: "Critical rationalism for the win. Faith in God is informed by reason and personal agency, not by blind belief.,
                 },
                 {
                   title: "Where does crypto and AI intersect?",
