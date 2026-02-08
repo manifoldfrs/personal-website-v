@@ -97,9 +97,9 @@ export default function AboutPage() {
                                                                         },
                                                                 },
                                                                 {
-                                                                        title: "Why is it hard for people to think for themselves?",
+                                                                        title: "Why is it hard for people to think for themselves? How can we increase our cognitive security?",
                                                                         description:
-                                                                                "Genuinely surprised at this.",
+                                                                                "Genuinely surprised at how big of an issue this is.",
                                                                 },
                                                         ].map(
                                                                 (
