@@ -9,7 +9,14 @@ import {
 } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const values = ["Curiosity", "Respect", "Progress", "Agency", "Conviction"];
+const values = [
+        "Truth",
+        "Curiosity",
+        "Respect",
+        "Progress",
+        "Agency",
+        "Conviction",
+];
 
 export function About() {
         const containerRef = useRef<HTMLDivElement>(null);

@@ -97,7 +97,7 @@ export default function AboutPage() {
                                                                         },
                                                                 },
                                                                 {
-                                                                        title: "Why are people so easily fooled?",
+                                                                        title: "Why is it hard for people to think for themselves?",
                                                                         description:
                                                                                 "Genuinely surprised at this.",
                                                                 },
