@@ -87,7 +87,7 @@ export default function AboutPage() {
                                                                 {
                                                                         title: "Where does crypto and AI intersect?",
                                                                         description:
-                                                                                "x402 is one open source example, I contribute to it so should you: ",
+                                                                                "x402 is one open source example, I contribute to it and so should you: ",
                                                                         link: {
                                                                                 url: "https://x402.org",
                                                                                 text: "x402.org",
