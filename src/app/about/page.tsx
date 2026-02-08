@@ -24,10 +24,7 @@ export default function AboutPage() {
                                                         01 — ABOUT
                                                 </p>
                                                 <h1 className="font-sans text-4xl md:text-6xl font-light tracking-tight mb-8">
-                                                        Building products that{" "}
-                                                        <span className="italic">
-                                                                matter
-                                                        </span>
+                                                        Velvet & Steel
                                                 </h1>
                                         </motion.div>
 
@@ -90,7 +87,7 @@ export default function AboutPage() {
                                                                 {
                                                                         title: "Where does crypto and AI intersect?",
                                                                         description:
-                                                                                "x402 is one example, btw I built the website: ",
+                                                                                "x402 is one open source example, I contribute to it so should you: ",
                                                                         link: {
                                                                                 url: "https://x402.org",
                                                                                 text: "x402.org",
