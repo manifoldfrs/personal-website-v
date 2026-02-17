@@ -21,7 +21,7 @@ const spaceGrotesk = Space_Grotesk({
 
 export const metadata: Metadata = {
   title: "Faris Habib | Software Engineer",
-  description: "Software Engineer building products that matter. Reflections on programming, philosophy, and life.",
+  description: "Software Engineer building products that matter. Reflections on programming and life.",
   metadataBase: new URL("https://hbb.dev"),
   openGraph: {
     title: "Faris Habib | Software Engineer",

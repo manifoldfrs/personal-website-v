@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { motion } from "framer-motion"
 
 interface PostBodyProps {
@@ -67,13 +68,13 @@ export function PostBody({ title, date, content, tags }: PostBodyProps) {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="mt-16 pt-8 border-t border-white/10"
         >
-          <a
+          <Link
             href="/blog"
             className="inline-flex items-center gap-2 font-mono text-sm text-muted-foreground hover:text-accent transition-colors group"
           >
             <span className="group-hover:-translate-x-1 transition-transform">←</span>
             Back to all posts
-          </a>
+          </Link>
         </motion.div>
       </div>
     </article>

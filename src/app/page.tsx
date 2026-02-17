@@ -3,7 +3,6 @@ import { Effect } from "effect"
 import { Navbar } from "@/components/navbar"
 import { Hero } from "@/components/hero"
 import { SectionBlend } from "@/components/section-blend"
-import { About } from "@/components/about"
 import { PostList } from "@/components/post-list"
 import { Footer } from "@/components/footer"
 import { SmoothScroll } from "@/components/smooth-scroll"
@@ -52,7 +51,6 @@ export default function HomePage() {
       <main>
         <Hero />
         <SectionBlend />
-        <About />
         <Suspense fallback={<PostListSkeleton />}>
           <LatestPosts />
         </Suspense>

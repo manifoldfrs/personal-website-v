@@ -34,7 +34,7 @@ export function PostList({ posts, showHeader = true }: PostListProps) {
           className="mb-24"
         >
           <p className="font-mono text-xs tracking-[0.3em] text-muted-foreground mb-4">
-            03 — WRITINGS
+            02 — WRITINGS
           </p>
           <h2 className="font-sans text-3xl md:text-5xl font-light italic">
             Thoughts & Reflections

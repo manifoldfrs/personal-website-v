@@ -3,7 +3,6 @@
 import { useRef } from "react"
 import { motion, useScroll, useTransform } from "framer-motion"
 import dynamic from "next/dynamic"
-import Link from "next/link"
 
 const SentientSphere = dynamic(
   () => import("./sentient-sphere").then((mod) => mod.SentientSphere),

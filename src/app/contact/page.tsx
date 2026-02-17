@@ -48,7 +48,7 @@ export default function ContactPage() {
               03 — CONTACT
             </p>
             <h1 className="font-sans text-4xl md:text-6xl font-light tracking-tight mb-8">
-              Let's <span className="italic">connect</span>
+              Let&apos;s <span className="italic">connect</span>
             </h1>
             <p className="text-lg text-muted-foreground">
               Have a project in mind or just want to chat? Send me a message.
@@ -130,7 +130,7 @@ export default function ContactPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="text-green-400 font-mono text-sm"
               >
-                Message sent successfully! I'll get back to you soon.
+                Message sent successfully! I&apos;ll get back to you soon.
               </motion.p>
             )}
 

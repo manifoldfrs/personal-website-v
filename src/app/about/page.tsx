@@ -23,9 +23,6 @@ export default function AboutPage() {
                                                 <p className="font-mono text-xs tracking-[0.3em] text-muted-foreground mb-4">
                                                         01 — ABOUT
                                                 </p>
-                                                <h1 className="font-sans text-4xl md:text-6xl font-light tracking-tight mb-8">
-                                                        Velvet & Steel
-                                                </h1>
                                         </motion.div>
 
                                         {/* Bio */}
@@ -66,7 +63,7 @@ export default function AboutPage() {
                                                 className="mt-24"
                                         >
                                                 <h2 className="font-mono text-xs tracking-[0.3em] text-muted-foreground mb-8">
-                                                        QUESTIONS I'M WORKING ON
+                                                        QUESTIONS I&apos;M WORKING ON
                                                 </h2>
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                                         {[
