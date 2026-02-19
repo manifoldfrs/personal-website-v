@@ -1,49 +1,140 @@
 # AGENTS.md (root)
 
 ## Project Snapshot
-- Repo type: single Next.js application (no workspaces).
-- Stack: Next.js 16 App Router, React 19, TypeScript (strict), Tailwind CSS v4, Effect.js.
-- Blog posts live in `src/content/posts` and are parsed via `src/lib/blog`.
-- Subdirectories have their own AGENTS.md; read the closest file first.
+- Repo type: single Next.js application (App Router) with no workspaces.
+- Stack: Next.js 16, React 19, TypeScript strict, Tailwind CSS v4, Effect.js, Framer Motion, R3F.
+- Primary data path: markdown posts in `src/content/posts` loaded via `src/lib/blog`.
+- This is a content+experience site with a client-side visual layer but server-rendered routing and pages.
 
-## Root Setup Commands
+## Instruction Hierarchy
+- Always apply root rules first.
+- Before touching a path, read the closest `AGENTS.md` in that directory subtree.
+- Mandatory checks to route by scope:
+  - `src/app/AGENTS.md`
+  - `src/components/AGENTS.md`
+  - `src/lib/AGENTS.md`
+  - `src/content/AGENTS.md`
+- If instructions conflict, follow the most specific file in the target directory.
+
+## Tooling and Setup
 - Install dependencies: `bun install`
-- Dev server: `bun run dev`
-- Build: `bun run build`
-- Start (prod): `bun run start`
+- Run local dev server: `bun run dev`
+- Build production bundle: `bun run build`
+- Start production server: `bun run start`
+- Lint project: `bun run lint`
 - Typecheck: `bun x tsc --noEmit`
-- Lint (only automated check): `bun run lint`
 
-## Universal Conventions
-- TypeScript strict mode and `@/` path alias (`tsconfig.json`).
-- App Router server components by default; add `"use client"` for hooks/animations.
-- Use double quotes and no semicolons to match existing style.
-- Tailwind v4 via `@tailwindcss/postcss`; tokens in `src/app/globals.css`.
-- Prefer named exports and kebab-case filenames for components.
+## Primary Validation Commands
+- No dedicated test script is defined in this repository.
+- Replace "tests" with focused verification from lint/typecheck/build.
+- Fast path for local edits: `bun run lint`.
+- Full path for PRs: `bun run lint && bun x tsc --noEmit && bun run build`.
+- For targeted checks when investigating one file:
+  - `bun run lint src/app/page.tsx`
+  - `bun run lint src/components/hero.tsx`
+  - `bun x tsc --noEmit --pretty false`
+- For content changes only, run:
+  - `bun run build` (ensures blog route generation and markdown pipelines work)
 
-## Security & Secrets
-- Secrets go in `.env.local` (e.g., `RESEND_API_KEY`).
-- Never commit `.env*` files or API keys.
-- Avoid logging form submissions or user PII outside local debugging.
+## Core Conventions
+- Use TypeScript strict everywhere; avoid `any` unless documented with a short reason and TODO.
+- Use named exports by default.
+- Keep filenames in kebab-case when possible (e.g. `post-list.tsx`, `page.tsx`).
+- Prefer the `@/` alias from `tsconfig.json` for internal imports.
+- Prefer double quotes in TypeScript/JSX.
+- No semicolons in TypeScript and CSS snippets.
+- Keep route modules thin; move reusable logic into `src/lib` or `src/components`.
+- Use `await` and explicit error handling instead of silent fallback values.
+- Use early returns for guard clauses and readable branching.
 
-## JIT Index (what to open, not what to paste)
+## React and Next Patterns
+- App Router server components are default.
+- Mark client-only files with `"use client"` before React imports when using hooks, state, or browser-only APIs.
+- Use server actions for mutations (`"use server"`) and keep API/side-effect code out of route components.
+- Prefer async server components with direct data loading (`async function ...()`).
+- Use dynamic segments and `params` typing patterns that match current Next behavior.
+- Use `generateStaticParams`, `generateMetadata`, and canonical metadata objects where useful.
+- Keep `globals.css` import in `src/app/layout.tsx` only.
+- Use `next/link` for internal navigation, `next/image` for raster content where performance matters.
 
-### Package Structure
-- App Router routes: `src/app/` → `src/app/AGENTS.md`
-- UI components: `src/components/` → `src/components/AGENTS.md`
-- Blog + utilities: `src/lib/` → `src/lib/AGENTS.md`
-- Markdown posts: `src/content/` → `src/content/AGENTS.md`
-- Static assets: `public/images/`
+## Effect.js and Data Layer Rules
+- Blog access should flow through the public `src/lib/blog` API (`getAllPosts`, `getPostBySlug`, etc.).
+- When writing effects in pages/actions, use explicit `Effect.runPromise` entrypoints.
+- Preserve frontmatter shape via schema validation (Zod).
+- Keep markdown parsing and slug derivation inside library modules; routes should avoid file system internals.
+- Prefer pure utility functions for transformations and reserve side effects for service layers.
 
-### Quick Find Commands
-- Find a route page: `rg -n "export default" src/app`
+## Error Handling Standards
+- Fail loudly in library/service boundaries, then map to route-safe user messages at UI boundaries.
+- In route components, render explicit fallback UI for missing/error states.
+- Do not swallow parsing or content-loading errors unless there is a deliberate fallback with telemetry/logging plan.
+- Keep thrown error classes narrow and intentional.
+
+## Content and Markdown Rules
+- Posts must live under `src/content/posts` and follow filename prefix pattern `YYYY-MM-DD-slug.md`.
+- Keep required frontmatter fields present and valid (at least `layout`, `title`, `date`, `categories`).
+- Maintain markdown structure with clear heading hierarchy.
+- Reference assets from `public/images` using site-root relative paths (no hardcoded external-only shortcuts).
+- Keep post content readable in raw markdown; avoid adding JSX wrappers unless required by markdown renderer behavior.
+
+## UI/Component Rules
+- Use `data-cursor-hover` for cursor-target interactions where relevant.
+- Prefer semantic tags and accessible labels for interactive elements.
+- Keep 3D/visual-heavy modules isolated and loaded client-only when necessary.
+- For motion, keep transitions purposeful and avoid excessive autoplay loops that increase CPU on first paint.
+- Avoid placing heavy WebGL/Canvas code in multiple files; centralize in the established component.
+
+## Security and Privacy
+- Secrets belong in `.env.local` only.
+- Set `RESEND_API_KEY` for contact forms.
+- Never commit `.env`, `.env.local`, or generated secrets.
+- Avoid logging PII, full form payloads, API tokens, or raw emails in application logs.
+- Validate input server-side for any public endpoint before side effects.
+
+## Git and Change Hygiene
+- Do not run destructive VCS resets or checkouts unless explicitly requested.
+- Avoid reverting unrelated changes from prior contributors/workstreams.
+- Keep edits scoped to intent.
+- Prefer minimal hunks and avoid broad reformatting.
+- If you need to move files, keep path and import updates consistent.
+
+## Performance and Delivery Checks
+- Keep render logic focused and avoid unnecessary client boundaries.
+- Prefer static generation and caching strategies already used by routes.
+- For any `next/dynamic` usage, ensure SSR boundary decisions are intentional.
+- Validate mobile and desktop layouts after animation/layout changes.
+
+## Quick discovery commands
+- Find app routes: `rg -n "export default" src/app`
 - Find server actions: `rg -n "\"use server\"" src/app`
-- Find a component: `rg -n "export function" src/components`
+- Find client islands: `rg -n "\"use client\"" src`
+- Find components: `rg -n "export function|export const" src/components`
 - Find blog data usage: `rg -n "getAllPosts|getPostBySlug|Effect.runPromise" src`
-- Find a post by title: `rg -n "^title:" src/content/posts`
+- Find content files: `rg -n "^---" src/content/posts`
+- Find frontmatter fields quickly: `rg -n "^title:|^date:|^categories:" src/content/posts`
+
+## Scope-Specific Touchpoints
+- App routes and layouts: `src/app/layout.tsx`, `src/app/page.tsx`, `src/app/blog/page.tsx`, `src/app/blog/[slug]/page.tsx`, `src/app/contact/actions.ts`
+- Shared UI: `src/components/hero.tsx`, `src/components/footer.tsx`, `src/components/post-list.tsx`, `src/components/post-body.tsx`
+- Blog service boundary: `src/lib/blog/index.ts`, `src/lib/blog/posts-service.ts`, `src/lib/blog/markdown.ts`, `src/lib/blog/slug.ts`, `src/lib/utils.ts`
+- Markdown examples: `src/content/posts/*`
+
+## Common Gotchas
+- `params` from dynamic routes can be asynchronous in current Next versions; type accordingly.
+- Keep all global styles imported from one place (`src/app/layout.tsx`).
+- WebGL/animation modules should remain client-only and not break SSR.
+- Contact action logic belongs in `src/app/contact/actions.ts`, not directly in component render code.
+
+## Optional AI Editing Rules
+- No `.cursor/rules/*.md` directory present in this repo.
+- No `.cursorrules` file present.
+- No `copilot-instructions.md` present in `.github` or root.
+- If such files appear later, treat them as highest priority under their own scope.
 
 ## Definition of Done
-- `bun run lint` passes (no dedicated test runner).
+- `bun run lint` passes.
 - `bun x tsc --noEmit` passes.
-- `bun run build` succeeds.
-- Content/routes updated and no secrets added.
+- `bun run build` passes.
+- Scope-specific AGENTS instructions are followed.
+- Public content updates are visible and posts remain valid.
+- No secrets or generated credentials committed.
