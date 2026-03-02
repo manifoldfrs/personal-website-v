@@ -23,6 +23,9 @@ export default function AboutPage() {
                                                 <p className="font-mono text-xs tracking-[0.3em] text-muted-foreground mb-4">
                                                         01 — ABOUT
                                                 </p>
+                                                <h1 className="font-sans text-4xl md:text-6xl font-light tracking-tight mb-8">
+                                                        Walk with me
+                                                </h1>
                                         </motion.div>
 
                                         {/* Bio */}
