@@ -181,7 +181,7 @@ export default function AboutPage() {
                                                                         borderRadius:
                                                                                 "12px",
                                                                 }}
-                                                                src="https://open.spotify.com/embed/track/40riOy7x9W7GXjyGp4pjAv?si=948f310fca684a62"
+                                                                src="https://open.spotify.com/embed/track/2HoqbEOXgbDSLZ5XCePEXt?si=574a8b33218b4f18"
                                                                 width="100%"
                                                                 height="352"
                                                                 allowFullScreen
