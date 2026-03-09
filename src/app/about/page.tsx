@@ -66,7 +66,8 @@ export default function AboutPage() {
                                                 className="mt-24"
                                         >
                                                 <h2 className="font-mono text-xs tracking-[0.3em] text-muted-foreground mb-8">
-                                                        QUESTIONS I&apos;M WORKING ON
+                                                        QUESTIONS I&apos;M
+                                                        WORKING ON
                                                 </h2>
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                                         {[
@@ -180,7 +181,7 @@ export default function AboutPage() {
                                                                         borderRadius:
                                                                                 "12px",
                                                                 }}
-                                                                src="https://open.spotify.com/embed/track/2OIDLNlOGgYXZVkM4Pim0M?si=55a70c5f5ecf432d"
+                                                                src="https://open.spotify.com/embed/track/40riOy7x9W7GXjyGp4pjAv?si=948f310fca684a62"
                                                                 width="100%"
                                                                 height="352"
                                                                 allowFullScreen
