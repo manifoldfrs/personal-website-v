@@ -760,8 +760,8 @@ export function MusicPlayer({
                                 <PixelWaves
                                         playbackRef={playbackRef}
                                         waveformRef={waveformRef}
-                                        columns={80}
-                                        rows={36}
+                                        columns={96}
+                                        rows={44}
                                 />
                         </div>
 
