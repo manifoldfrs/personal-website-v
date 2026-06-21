@@ -6,4 +6,4 @@ categories:
   - Posts
 ---
 
-Standards are cool, but if you're not having fun then why are you doing it? [Feel it.](https://mitchellh.com/writing/feel-it)
+Standards are cool, but if you're not having fun then why are you doing it? [Feel it.](https://www.cell.com/neuron/fulltext/S0896-6273(22)00544-X)

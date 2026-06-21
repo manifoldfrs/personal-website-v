@@ -4,6 +4,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { usePathname } from "next/navigation";
 import { PixelWaves, type Playback, type WaveformData } from "./pixel-waves";
+import {
+        beginAuth,
+        disconnect,
+        getValidToken,
+        isConfigured,
+        isConnected,
+} from "@/lib/spotify/auth";
 
 export type Track = {
         id: string;
@@ -14,6 +21,7 @@ export type Track = {
         durationMs: number;
 };
 
+// --- Spotify embed (preview) iFrame API ---
 type EmbedEvent = {
         data: {
                 isPaused: boolean;
@@ -23,7 +31,6 @@ type EmbedEvent = {
                 playingURI: string;
         };
 };
-
 type EmbedController = {
         loadUri: (uri: string) => void;
         play: () => void;
@@ -33,7 +40,6 @@ type EmbedController = {
         seek: (seconds: number) => void;
         addListener: (event: string, cb: (e: EmbedEvent) => void) => void;
 };
-
 type IframeApi = {
         createController: (
                 el: HTMLElement,
@@ -46,14 +52,50 @@ type IframeApi = {
         ) => void;
 };
 
+// --- Spotify Web Playback SDK (full tracks, Premium) ---
+type WebPlaybackTrack = {
+        id: string;
+        uri: string;
+        name: string;
+        artists: { name: string }[];
+        album: { images: { url: string }[] };
+};
+type WebPlaybackState = {
+        paused: boolean;
+        position: number;
+        duration: number;
+        track_window: { current_track: WebPlaybackTrack };
+};
+type SpotifyPlayer = {
+        connect: () => Promise<boolean>;
+        disconnect: () => void;
+        addListener: (event: string, cb: (payload: unknown) => void) => boolean;
+        togglePlay: () => Promise<void>;
+        nextTrack: () => Promise<void>;
+        previousTrack: () => Promise<void>;
+        seek: (ms: number) => Promise<void>;
+        setVolume: (v: number) => Promise<void>;
+        getCurrentState: () => Promise<WebPlaybackState | null>;
+};
+type SpotifyPlayerCtor = new (opts: {
+        name: string;
+        getOAuthToken: (cb: (token: string) => void) => void;
+        volume?: number;
+}) => SpotifyPlayer;
+
 declare global {
         interface Window {
                 onSpotifyIframeApiReady?: (api: IframeApi) => void;
                 __spotifyIframeApi?: IframeApi;
+                onSpotifyWebPlaybackSDKReady?: () => void;
+                Spotify?: { Player: SpotifyPlayerCtor };
         }
 }
 
 const IFRAME_API_SRC = "https://open.spotify.com/embed/iframe-api/v1";
+const SDK_SRC = "https://sdk.scdn.co/spotify-player.js";
+
+type Mode = "loading" | "sdk" | "embed";
 
 function makeOrder(n: number, keepFirst?: number): number[] {
         const arr = Array.from({ length: n }, (_, i) => i);
@@ -80,7 +122,6 @@ function seedFromId(id: string): number {
         return s / 100;
 }
 
-// --- icons ---
 const IconPrev = (
         <svg
                 width="16"
@@ -146,7 +187,7 @@ const CTRL =
 const CTRL_ACTIVE =
         "flex h-8 w-8 items-center justify-center rounded-full border border-accent text-accent";
 const PRIMARY =
-        "flex h-10 w-10 items-center justify-center rounded-full bg-accent text-accent-foreground transition-colors hover:bg-accent-bright";
+        "flex h-10 w-10 items-center justify-center rounded-full bg-accent text-accent-foreground transition-colors hover:bg-accent-bright disabled:opacity-40";
 
 export function MusicPlayer({
         tracks,
@@ -162,19 +203,26 @@ export function MusicPlayer({
         const hasTracks = tracks.length > 0;
 
         const [slot, setSlot] = useState<HTMLElement | null>(null);
-
-        const controllerRef = useRef<EmbedController | null>(null);
-        const embedHostRef = useRef<HTMLDivElement | null>(null);
-
+        const [mode, setMode] = useState<Mode>("loading");
         const [isPaused, setIsPaused] = useState(true);
         const [shuffle, setShuffle] = useState(false);
         const [current, setCurrent] = useState<Track | null>(tracks[0] ?? null);
+        const [sdkReady, setSdkReady] = useState(false);
+        const [premiumError, setPremiumError] = useState(false);
+        const [sdkErrorMsg, setSdkErrorMsg] = useState<string | null>(null);
 
+        // embed (preview) engine
+        const controllerRef = useRef<EmbedController | null>(null);
+        const embedHostRef = useRef<HTMLDivElement | null>(null);
         const orderRef = useRef<number[]>(
                 Array.from({ length: tracks.length }, (_, i) => i),
         );
         const posRef = useRef(0);
         const lastAdvanceRef = useRef(0);
+
+        // SDK (full-track) engine
+        const playerRef = useRef<SpotifyPlayer | null>(null);
+        const deviceIdRef = useRef<string | null>(null);
 
         const playbackRef = useRef<Playback>({
                 isPaused: true,
@@ -187,7 +235,19 @@ export function MusicPlayer({
         const waveformRef = useRef<WaveformData>(null);
         const waveformCache = useRef<Map<string, WaveformData>>(new Map());
 
-        // Resolve the docked slot after commit (so the About page's target exists).
+        // decide mode after mount (reads localStorage; avoids hydration mismatch)
+        useEffect(() => {
+                const id = requestAnimationFrame(() => {
+                        setMode(
+                                isConfigured() && isConnected()
+                                        ? "sdk"
+                                        : "embed",
+                        );
+                });
+                return () => cancelAnimationFrame(id);
+        }, []);
+
+        // resolve the docked slot after commit
         useEffect(() => {
                 const raf = requestAnimationFrame(() => {
                         setSlot(
@@ -220,6 +280,7 @@ export function MusicPlayer({
                 }
         }, []);
 
+        // ---- embed (preview) mode ----
         const goTo = useCallback(
                 (newPos: number, play: boolean) => {
                         const controller = controllerRef.current;
@@ -247,8 +308,8 @@ export function MusicPlayer({
                 [hasTracks, tracks, loadWaveform],
         );
 
-        // initialize the IFrame API + controller once
         useEffect(() => {
+                if (mode !== "embed") return;
                 const host = embedHostRef.current;
                 if (!host) return;
 
@@ -267,7 +328,6 @@ export function MusicPlayer({
                                         controllerRef.current = controller;
                                         if (tracks[0])
                                                 void loadWaveform(tracks[0].id);
-
                                         controller.addListener(
                                                 "playback_update",
                                                 (e) => {
@@ -281,7 +341,6 @@ export function MusicPlayer({
                                                                 d.duration;
                                                         playbackRef.current.lastUpdate =
                                                                 performance.now();
-
                                                         const now =
                                                                 performance.now();
                                                         if (
@@ -314,7 +373,6 @@ export function MusicPlayer({
                         init(window.__spotifyIframeApi);
                         return;
                 }
-
                 window.onSpotifyIframeApiReady = (api) => {
                         window.__spotifyIframeApi = api;
                         init(api);
@@ -329,23 +387,198 @@ export function MusicPlayer({
                         s.async = true;
                         document.body.appendChild(s);
                 }
-        }, [hasTracks, tracks, playlistUri, loadWaveform, goTo]);
+        }, [mode, hasTracks, tracks, playlistUri, loadWaveform, goTo]);
 
+        // ---- SDK (full-track) mode ----
+        useEffect(() => {
+                if (mode !== "sdk") return;
+                let player: SpotifyPlayer | null = null;
+
+                const setup = () => {
+                        if (!window.Spotify) return;
+                        player = new window.Spotify.Player({
+                                name: "hbb.dev",
+                                getOAuthToken: (cb) => {
+                                        void getValidToken().then((t) => {
+                                                if (t) cb(t);
+                                        });
+                                },
+                                volume: 0.7,
+                        });
+                        playerRef.current = player;
+
+                        player.addListener("ready", (payload) => {
+                                const { device_id } = payload as {
+                                        device_id: string;
+                                };
+                                console.log("[spotify sdk] ready, device", device_id);
+                                deviceIdRef.current = device_id;
+                                setSdkReady(true);
+                        });
+                        player.addListener("not_ready", () => {
+                                deviceIdRef.current = null;
+                                setSdkReady(false);
+                        });
+                        player.addListener(
+                                "player_state_changed",
+                                (payload) => {
+                                        const state =
+                                                payload as WebPlaybackState | null;
+                                        if (!state) return;
+                                        setIsPaused(state.paused);
+                                        playbackRef.current.isPaused =
+                                                state.paused;
+                                        playbackRef.current.positionMs =
+                                                state.position;
+                                        playbackRef.current.durationMs =
+                                                state.duration;
+                                        playbackRef.current.fullDurationMs =
+                                                state.duration;
+                                        playbackRef.current.lastUpdate =
+                                                performance.now();
+                                        const tk =
+                                                state.track_window
+                                                        ?.current_track;
+                                        if (tk) {
+                                                playbackRef.current.trackSeed =
+                                                        seedFromId(tk.id);
+                                                setCurrent({
+                                                        id: tk.id,
+                                                        uri: tk.uri,
+                                                        name: tk.name,
+                                                        artists: tk.artists
+                                                                .map(
+                                                                        (a) =>
+                                                                                a.name,
+                                                                )
+                                                                .join(", "),
+                                                        image:
+                                                                tk.album
+                                                                        ?.images?.[0]
+                                                                        ?.url ??
+                                                                null,
+                                                        durationMs: state.duration,
+                                                });
+                                                void loadWaveform(tk.id);
+                                        }
+                                },
+                        );
+                        const fail = (label: string) => (payload: unknown) => {
+                                const message =
+                                        (payload as { message?: string })?.message ??
+                                        "unknown";
+                                console.error(`[spotify sdk] ${label}:`, message, payload);
+                                setSdkErrorMsg(`${label}: ${message}`);
+                                if (label === "account_error") setPremiumError(true);
+                                disconnect();
+                        };
+                        player.addListener("initialization_error", fail("initialization_error"));
+                        player.addListener("authentication_error", fail("authentication_error"));
+                        player.addListener("account_error", fail("account_error"));
+                        player.addListener("playback_error", (e) =>
+                                console.error("[spotify sdk] playback_error:", e),
+                        );
+                        void player.connect().then((ok) => {
+                                console.log("[spotify sdk] connect() ->", ok);
+                        });
+                };
+
+                if (window.Spotify) {
+                        setup();
+                } else {
+                        window.onSpotifyWebPlaybackSDKReady = setup;
+                        if (
+                                !document.querySelector(
+                                        `script[src="${SDK_SRC}"]`,
+                                )
+                        ) {
+                                const s = document.createElement("script");
+                                s.src = SDK_SRC;
+                                s.async = true;
+                                document.body.appendChild(s);
+                        }
+                }
+
+                return () => {
+                        player?.disconnect();
+                };
+        }, [mode, loadWaveform]);
+
+        const sdkToggle = useCallback(async () => {
+                const player = playerRef.current;
+                if (!player) return;
+                const state = await player.getCurrentState();
+                if (!state) {
+                        const token = await getValidToken();
+                        const device = deviceIdRef.current;
+                        if (!token || !device) return;
+                        await fetch(
+                                `https://api.spotify.com/v1/me/player/play?device_id=${device}`,
+                                {
+                                        method: "PUT",
+                                        headers: {
+                                                Authorization: `Bearer ${token}`,
+                                                "Content-Type":
+                                                        "application/json",
+                                        },
+                                        body: JSON.stringify({
+                                                uris: tracks.map((t) => t.uri),
+                                        }),
+                                },
+                        );
+                } else {
+                        await player.togglePlay();
+                }
+        }, [tracks]);
+
+        const sdkShuffle = useCallback(async () => {
+                const next = !shuffle;
+                setShuffle(next);
+                const token = await getValidToken();
+                const device = deviceIdRef.current;
+                if (!token || !device) return;
+                await fetch(
+                        `https://api.spotify.com/v1/me/player/shuffle?state=${next}&device_id=${device}`,
+                        {
+                                method: "PUT",
+                                headers: { Authorization: `Bearer ${token}` },
+                        },
+                );
+        }, [shuffle]);
+
+        // ---- unified controls ----
         const onToggle = useCallback(() => {
+                if (mode === "sdk") {
+                        void sdkToggle();
+                        return;
+                }
                 const c = controllerRef.current;
                 if (!c) return;
                 if (isPaused) c.resume();
                 else c.pause();
-        }, [isPaused]);
-        const onNext = useCallback(
-                () => goTo(posRef.current + 1, true),
-                [goTo],
-        );
-        const onPrev = useCallback(
-                () => goTo(posRef.current - 1, true),
-                [goTo],
-        );
+        }, [mode, isPaused, sdkToggle]);
+
+        const onNext = useCallback(() => {
+                if (mode === "sdk") {
+                        void playerRef.current?.nextTrack();
+                        return;
+                }
+                goTo(posRef.current + 1, true);
+        }, [mode, goTo]);
+
+        const onPrev = useCallback(() => {
+                if (mode === "sdk") {
+                        void playerRef.current?.previousTrack();
+                        return;
+                }
+                goTo(posRef.current - 1, true);
+        }, [mode, goTo]);
+
         const onShuffle = useCallback(() => {
+                if (mode === "sdk") {
+                        void sdkShuffle();
+                        return;
+                }
                 if (!hasTracks) return;
                 const next = !shuffle;
                 setShuffle(next);
@@ -354,8 +587,18 @@ export function MusicPlayer({
                         ? makeOrder(tracks.length, curIdx)
                         : Array.from({ length: tracks.length }, (_, i) => i);
                 posRef.current = next ? 0 : curIdx;
-        }, [shuffle, hasTracks, tracks.length]);
+        }, [mode, sdkShuffle, shuffle, hasTracks, tracks.length]);
 
+        const onConnect = useCallback(() => {
+                void beginAuth();
+        }, []);
+        const onDisconnect = useCallback(() => {
+                disconnect();
+                playerRef.current?.disconnect();
+                window.location.reload();
+        }, []);
+
+        const controlsDisabled = mode === "sdk" ? !sdkReady : !hasTracks;
         const trackUrl = current
                 ? `https://open.spotify.com/track/${current.id}`
                 : playlistUrl;
@@ -399,7 +642,9 @@ export function MusicPlayer({
                                                 <button
                                                         type="button"
                                                         onClick={onPrev}
-                                                        disabled={!hasTracks}
+                                                        disabled={
+                                                                controlsDisabled
+                                                        }
                                                         aria-label="Previous"
                                                         className={CTRL}
                                                 >
@@ -408,6 +653,9 @@ export function MusicPlayer({
                                                 <button
                                                         type="button"
                                                         onClick={onToggle}
+                                                        disabled={
+                                                                controlsDisabled
+                                                        }
                                                         aria-label={
                                                                 isPaused
                                                                         ? "Play"
@@ -422,7 +670,9 @@ export function MusicPlayer({
                                                 <button
                                                         type="button"
                                                         onClick={onNext}
-                                                        disabled={!hasTracks}
+                                                        disabled={
+                                                                controlsDisabled
+                                                        }
                                                         aria-label="Next"
                                                         className={CTRL}
                                                 >
@@ -431,7 +681,9 @@ export function MusicPlayer({
                                                 <button
                                                         type="button"
                                                         onClick={onShuffle}
-                                                        disabled={!hasTracks}
+                                                        disabled={
+                                                                controlsDisabled
+                                                        }
                                                         aria-label="Shuffle"
                                                         aria-pressed={shuffle}
                                                         className={
@@ -451,6 +703,48 @@ export function MusicPlayer({
                                                         Powered by Spotify
                                                 </a>
                                         </div>
+
+                                        {isConfigured() &&
+                                                mode !== "loading" && (
+                                                        <div className="mt-2 flex items-center gap-2">
+                                                                {mode ===
+                                                                "sdk" ? (
+                                                                        <button
+                                                                                type="button"
+                                                                                onClick={
+                                                                                        onDisconnect
+                                                                                }
+                                                                                className="font-mono text-[10px] text-muted-foreground transition-colors hover:text-accent"
+                                                                        >
+                                                                                {sdkReady
+                                                                                        ? "Disconnect Spotify"
+                                                                                        : "Connecting Spotify…"}
+                                                                        </button>
+                                                                ) : (
+                                                                        <button
+                                                                                type="button"
+                                                                                onClick={
+                                                                                        onConnect
+                                                                                }
+                                                                                className="font-mono text-[10px] text-accent transition-colors hover:text-accent-bright"
+                                                                        >
+                                                                                Connect
+                                                                                Spotify
+                                                                                for
+                                                                                full
+                                                                                songs
+                                                                                →
+                                                                        </button>
+                                                                )}
+                                                                {sdkErrorMsg && (
+                                                                        <span className="font-mono text-[10px] text-destructive">
+                                                                                {premiumError
+                                                                                        ? "Premium required"
+                                                                                        : sdkErrorMsg}
+                                                                        </span>
+                                                                )}
+                                                        </div>
+                                                )}
                                 </div>
                         </div>
                 );
@@ -471,7 +765,7 @@ export function MusicPlayer({
                                 />
                         </div>
 
-                        {/* audio engine: hidden, never moves (so it never reloads) */}
+                        {/* embed audio engine (preview mode): hidden, never moves */}
                         <div
                                 aria-hidden
                                 className="pointer-events-none fixed bottom-0 right-0 -z-10 h-20 w-[320px] opacity-[0.001]"
