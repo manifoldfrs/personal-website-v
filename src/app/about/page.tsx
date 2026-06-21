@@ -18,6 +18,13 @@ export default function AboutPage() {
 					different explanations.
 				</p>
 			</div>
+
+			<section className="mt-16">
+				<h2 className="mb-6 font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
+					Vibes
+				</h2>
+				<div id="vibes-slot" />
+			</section>
 		</div>
 	);
 }

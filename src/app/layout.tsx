@@ -10,6 +10,8 @@ import { Analytics } from "@vercel/analytics/next";
 import Link from "next/link";
 import { Sidebar } from "@/components/sidebar";
 import { Footer } from "@/components/footer";
+import { MusicPlayer } from "@/components/music-player";
+import { getPlaylistTracks, PLAYLIST_URI, PLAYLIST_URL } from "@/lib/spotify/playlist";
 import "./globals.css";
 
 // Display: Archivo at its widest width axis (set via .display in globals.css)
@@ -65,11 +67,12 @@ export const viewport: Viewport = {
         themeColor: "#0e121a",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
         children,
 }: Readonly<{
         children: React.ReactNode;
 }>) {
+        const tracks = await getPlaylistTracks();
         return (
                 <html
                         lang="en"
@@ -92,6 +95,7 @@ export default function RootLayout({
                                                 <Footer />
                                         </div>
                                 </div>
+                                <MusicPlayer tracks={tracks} playlistUri={PLAYLIST_URI} playlistUrl={PLAYLIST_URL} />
                                 <Analytics />
                         </body>
                 </html>
