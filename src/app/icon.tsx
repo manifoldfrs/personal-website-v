@@ -11,16 +11,19 @@ export default function Icon() {
     (
       <div
         style={{
-          fontSize: 28,
-          background: "transparent",
+          fontSize: 18,
+          fontWeight: 800,
+          color: "#ffffff",
+          background: "#e60026",
           width: "100%",
           height: "100%",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          borderRadius: "50%",
         }}
       >
-        🤘
+        F
       </div>
     ),
     {

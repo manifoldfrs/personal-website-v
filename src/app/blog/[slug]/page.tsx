@@ -2,10 +2,6 @@ import { cache } from "react"
 import { Effect } from "effect"
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
-import { Navbar } from "@/components/navbar"
-import { Footer } from "@/components/footer"
-import { SmoothScroll } from "@/components/smooth-scroll"
-import { CustomCursor } from "@/components/custom-cursor"
 import { PostBody } from "@/components/post-body"
 import { getAllSlugs, getPostBySlug, PostNotFoundError } from "@/lib/blog"
 import type { Post } from "@/lib/blog"
@@ -67,19 +63,5 @@ export default async function BlogPostPage({ params }: PageProps) {
     notFound()
   }
 
-  return (
-    <SmoothScroll>
-      <CustomCursor />
-      <Navbar />
-      <main>
-        <PostBody
-          title={post.title}
-          date={post.date}
-          content={post.content}
-          tags={post.tags}
-        />
-      </main>
-      <Footer />
-    </SmoothScroll>
-  )
+  return <PostBody title={post.title} date={post.date} content={post.content} tags={post.tags} />
 }

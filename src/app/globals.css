@@ -3,41 +3,54 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Dark portfolio theme with gold accent */
+/*
+ * Minimal dark theme.
+ * Palette: Superman (red + yellow) over Mitchell Hashimoto's navy and grays.
+ *   navy background, deep black wells, Superman red accent, yellow for rare highlights.
+ */
 :root {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.145 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.145 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  
-  /* Gold accent palette */
-  --accent: oklch(0.78 0.16 85);
-  --accent-bright: oklch(0.85 0.18 80);
-  --accent-muted: oklch(0.55 0.12 85);
-  --accent-foreground: oklch(0.15 0.02 85);
-  
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.269 0 0);
-  --input: oklch(0.269 0 0);
-  --ring: oklch(0.439 0 0);
-  --radius: 0.625rem;
+  --background: #0e121a; /* navy */
+  --foreground: #e5e7eb; /* gray-200 body text */
+  --black: #050505; /* deep black for wells */
+
+  --card: #0e121a;
+  --card-foreground: #e5e7eb;
+  --popover: #0e121a;
+  --popover-foreground: #e5e7eb;
+
+  --primary: #f3f4f6; /* near-white headings */
+  --primary-foreground: #0e121a;
+  --secondary: #1e2939; /* gray-800 fills */
+  --secondary-foreground: #e5e7eb;
+  --muted: #1e2939;
+  --muted-foreground: #6a7282; /* gray-500 */
+
+  /* Superman red accent */
+  --accent: #e60026;
+  --accent-bright: #ff3b52;
+  --accent-muted: #b0001d;
+  --accent-foreground: #ffffff;
+
+  /* Superman yellow, used sparingly */
+  --highlight: #fcea0e;
+
+  --destructive: #fb2c36;
+  --destructive-foreground: #ffffff;
+  --border: #1e2939; /* gray-800 */
+  --border-strong: #364153; /* gray-700 */
+  --input: #364153;
+  --ring: #e60026;
+  --radius: 0.5rem;
 }
 
 @theme inline {
-  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
-  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
-  --font-display: var(--font-space-grotesk), system-ui, sans-serif;
+  --font-sans: var(--font-ibm-plex-sans), system-ui, sans-serif;
+  --font-serif: var(--font-ibm-plex-serif), Georgia, "Times New Roman", serif;
+  --font-mono: var(--font-ibm-plex-mono), ui-monospace, "SFMono-Regular", monospace;
+  --font-display: var(--font-archivo), system-ui, sans-serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-black: var(--black);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
@@ -52,9 +65,11 @@
   --color-accent-bright: var(--accent-bright);
   --color-accent-muted: var(--accent-muted);
   --color-accent-foreground: var(--accent-foreground);
+  --color-highlight: var(--highlight);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
   --color-input: var(--input);
   --color-ring: var(--ring);
   --radius-sm: calc(var(--radius) - 4px);
@@ -65,140 +80,118 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
 }
 
-/* Noise texture overlay */
-.noise-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 9999;
-  opacity: 0.03;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+/* Expanded grotesque wordmark + display headings (Archivo at its widest width axis) */
+@layer components {
+  .display {
+    font-family: var(--font-display);
+    font-stretch: 125%;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
-
 ::-webkit-scrollbar-track {
   background: var(--background);
 }
-
 ::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 3px;
+  background: var(--border-strong);
+  border-radius: 4px;
 }
 
-/* Selection styles - gold */
+/* Selection - Superman red */
 ::selection {
   background: var(--accent);
   color: var(--accent-foreground);
 }
 
-/* Marquee animation */
-@keyframes marquee-left {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-@keyframes marquee-right {
-  from {
-    transform: translateX(-50%);
-  }
-  to {
-    transform: translateX(0);
-  }
-}
-
-.animate-marquee-left {
-  animation: marquee-left 50s linear infinite;
-}
-
-.animate-marquee-right {
-  animation: marquee-right 50s linear infinite;
-}
-
-/* Prose styling for blog posts */
+/* ---- Prose: serif body, sans headings, red links ---- */
 .prose {
-  @apply text-foreground max-w-none;
+  @apply text-foreground max-w-none text-[1.0625rem] leading-[1.75];
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+  @apply font-sans font-semibold tracking-tight text-primary;
 }
 
 .prose h1 {
-  @apply text-3xl font-bold mt-8 mb-4 font-mono;
+  @apply text-3xl mt-12 mb-4;
 }
-
 .prose h2 {
-  @apply text-2xl font-semibold mt-6 mb-3 font-mono;
+  @apply text-2xl mt-10 mb-3;
 }
-
 .prose h3 {
-  @apply text-xl font-semibold mt-5 mb-2 font-mono;
+  @apply text-xl mt-8 mb-2;
 }
 
 .prose p {
-  @apply mb-4 leading-relaxed;
+  @apply mb-5;
 }
 
 .prose a {
-  @apply text-accent underline underline-offset-4 hover:text-accent-bright transition-colors;
+  @apply text-accent underline underline-offset-[3px] decoration-accent/40 hover:decoration-accent transition-colors;
 }
 
-.prose ul, .prose ol {
-  @apply mb-4 pl-6;
+.prose ul,
+.prose ol {
+  @apply mb-5 pl-6;
 }
-
 .prose li {
   @apply mb-2;
 }
-
 .prose ul li {
   @apply list-disc;
 }
-
 .prose ol li {
   @apply list-decimal;
 }
 
 .prose blockquote {
-  @apply border-l-4 border-accent pl-4 italic my-4 text-muted-foreground;
+  @apply border-l-2 border-accent pl-4 italic my-6 text-muted-foreground;
 }
 
 .prose code {
-  @apply bg-secondary px-1.5 py-0.5 rounded text-sm font-mono;
+  @apply bg-black/60 px-1.5 py-0.5 rounded text-[0.85em] font-mono text-foreground;
 }
 
 .prose pre {
-  @apply bg-secondary p-4 rounded-lg overflow-x-auto my-4;
+  @apply bg-black/60 border border-border p-4 rounded-lg overflow-x-auto my-6 text-sm;
 }
 
 .prose pre code {
-  @apply bg-transparent p-0;
+  @apply bg-transparent p-0 text-[0.95em];
 }
 
 .prose img {
-  @apply rounded-lg my-6 max-w-full;
+  @apply rounded-lg my-8 max-w-full border border-border;
 }
 
 .prose hr {
-  @apply border-border my-8;
+  @apply border-border my-10;
 }
 
 .prose strong {
-  @apply font-semibold;
+  @apply font-semibold text-primary;
+}
+
+.prose mark {
+  @apply rounded-sm bg-highlight px-1 text-black;
 }
 
 .prose em {
@@ -206,5 +199,5 @@
 }
 
 .prose iframe {
-  @apply w-full my-6 rounded-lg;
+  @apply w-full my-8 rounded-lg;
 }

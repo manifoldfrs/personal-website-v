@@ -115,7 +115,7 @@
 
 ## Scope-Specific Touchpoints
 - App routes and layouts: `src/app/layout.tsx`, `src/app/page.tsx`, `src/app/blog/page.tsx`, `src/app/blog/[slug]/page.tsx`, `src/app/contact/actions.ts`
-- Shared UI: `src/components/hero.tsx`, `src/components/footer.tsx`, `src/components/post-list.tsx`, `src/components/post-body.tsx`
+- Shared UI: `src/components/sidebar.tsx`, `src/components/footer.tsx`, `src/components/post-list.tsx`, `src/components/post-body.tsx`
 - Blog service boundary: `src/lib/blog/index.ts`, `src/lib/blog/posts-service.ts`, `src/lib/blog/markdown.ts`, `src/lib/blog/slug.ts`, `src/lib/utils.ts`
 - Markdown examples: `src/content/posts/*`
 

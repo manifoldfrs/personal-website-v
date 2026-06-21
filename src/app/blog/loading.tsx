@@ -1,11 +1,12 @@
 export default function Loading() {
   return (
-    <div className="min-h-screen pt-32 px-8 md:px-12">
-      <div className="animate-pulse space-y-8">
-        {[...Array(5)].map((_, i) => (
-          <div key={i} className="border-t border-white/10 py-8">
-            <div className="h-4 w-24 bg-secondary rounded mb-4" />
-            <div className="h-8 w-3/4 bg-secondary rounded" />
+    <div className="animate-pulse">
+      <div className="mb-10 h-5 w-3/4 rounded bg-secondary" />
+      <div className="divide-y divide-border border-y border-border">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} className="flex items-center justify-between py-4">
+            <div className="h-5 w-2/3 rounded bg-secondary" />
+            <div className="h-3 w-20 rounded bg-secondary" />
           </div>
         ))}
       </div>

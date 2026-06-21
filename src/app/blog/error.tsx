@@ -14,21 +14,15 @@ export default function Error({
   }, [error])
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="font-mono text-8xl font-light text-muted-foreground mb-4">
-          :(
-        </h1>
-        <p className="font-mono text-sm text-muted-foreground mb-8">
-          Something went wrong
-        </p>
-        <button
-          onClick={reset}
-          className="font-mono text-sm px-6 py-3 border border-accent text-accent hover:bg-accent hover:text-accent-foreground transition-colors rounded"
-        >
-          Try again
-        </button>
-      </div>
+    <div className="py-8">
+      <p className="display text-5xl text-accent">Oops</p>
+      <p className="mt-4 font-serif text-lg text-muted-foreground">Could not load writing.</p>
+      <button
+        onClick={reset}
+        className="mt-6 rounded-md border border-border px-5 py-2.5 font-mono text-sm text-foreground transition-colors hover:border-accent hover:text-accent"
+      >
+        Try again
+      </button>
     </div>
   )
 }
