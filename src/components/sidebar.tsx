@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { MusicPlayer, type Track } from "./music-player"
 
 const navLinks = [
   { label: "About", href: "/about" },
@@ -9,23 +10,26 @@ const navLinks = [
   { label: "Contact", href: "/contact" },
 ] as const
 
-export function Sidebar() {
+export function Sidebar({
+  tracks,
+  playlistUri,
+  playlistUrl,
+}: {
+  tracks: Track[]
+  playlistUri: string
+  playlistUrl: string
+}) {
   const pathname = usePathname()
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`)
 
   return (
-    <aside className="shrink-0 md:sticky md:top-0 md:h-screen md:w-40 md:pt-24">
-      <div className="flex items-center justify-between gap-4 py-5 md:flex-col md:items-start md:gap-16 md:py-0">
-        {/* Avatar / home link */}
-        <Link href="/" aria-label="Home — Faris Habib" className="group inline-flex">
-          <span className="display flex h-11 w-11 items-center justify-center rounded-full bg-accent text-sm tracking-normal text-accent-foreground ring-2 ring-highlight/80 ring-offset-2 ring-offset-background transition-transform duration-300 group-hover:scale-105">
-            FH
-          </span>
-        </Link>
+    <aside className="shrink-0 md:sticky md:top-0 md:h-screen md:w-56 md:pt-24">
+      <div className="flex flex-col gap-10 py-6 md:gap-12 md:py-0">
+        {/* Music player (lives where the logo used to) */}
+        <MusicPlayer tracks={tracks} playlistUri={playlistUri} playlistUrl={playlistUrl} />
 
-        {/* Navigation */}
         <nav>
-          <ul className="flex items-center gap-6 md:flex-col md:items-start md:gap-3.5">
+          <ul className="flex flex-row flex-wrap gap-x-6 gap-y-2 md:flex-col md:gap-4">
             {navLinks.map((link) => {
               const active = isActive(link.href)
               return (

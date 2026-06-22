@@ -100,6 +100,17 @@
   }
 }
 
+/* Spinning vinyl album art for the music player */
+@keyframes spin-disc {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spin-disc {
+  animation: spin-disc 8s linear infinite;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;

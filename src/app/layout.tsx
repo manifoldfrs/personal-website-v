@@ -10,7 +10,6 @@ import { Analytics } from "@vercel/analytics/next";
 import Link from "next/link";
 import { Sidebar } from "@/components/sidebar";
 import { Footer } from "@/components/footer";
-import { MusicPlayer } from "@/components/music-player";
 import { getPlaylistTracks, PLAYLIST_URI, PLAYLIST_URL } from "@/lib/spotify/playlist";
 import "./globals.css";
 
@@ -80,7 +79,7 @@ export default async function RootLayout({
                 >
                         <body className="font-serif">
                                 <div className="mx-auto flex w-full max-w-5xl flex-col px-6 md:flex-row md:gap-14 md:px-10">
-                                        <Sidebar />
+                                        <Sidebar tracks={tracks} playlistUri={PLAYLIST_URI} playlistUrl={PLAYLIST_URL} />
                                         <div className="flex min-h-screen flex-1 flex-col">
                                                 <main className="flex-1 pb-16 pt-4 md:pt-24">
                                                         <Link
@@ -95,7 +94,6 @@ export default async function RootLayout({
                                                 <Footer />
                                         </div>
                                 </div>
-                                <MusicPlayer tracks={tracks} playlistUri={PLAYLIST_URI} playlistUrl={PLAYLIST_URL} />
                                 <Analytics />
                         </body>
                 </html>

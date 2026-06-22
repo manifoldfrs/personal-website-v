@@ -19,12 +19,13 @@ export default function AboutPage() {
 				</p>
 			</div>
 
-			<section className="mt-16">
-				<h2 className="mb-6 font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
-					Vibes
-				</h2>
-				<div id="vibes-slot" />
-			</section>
+			{/* eslint-disable-next-line @next/next/no-img-element */}
+			<img
+				src="/images/scotland.png"
+				alt="A photo from Scotland"
+				loading="lazy"
+				className="mt-10 w-full rounded-lg border border-border"
+			/>
 		</div>
 	);
 }
