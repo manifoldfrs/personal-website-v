@@ -172,6 +172,8 @@ export function MusicPlayer({
   // SDK (full-track) engine
   const playerRef = useRef<SpotifyPlayer | null>(null)
   const deviceIdRef = useRef<string | null>(null)
+  const startingRef = useRef(false) // guard against stacking /play calls
+  const cooldownUntilRef = useRef(0) // back off after a 429
 
   const playbackRef = useRef<Playback>({
     isPaused: true,
@@ -373,34 +375,52 @@ export function MusicPlayer({
     }
   }, [mode, loadWaveform])
 
+  // Record a 429 so we stop hammering the Connect API until Retry-After elapses
+  const noteRateLimit = (res: Response) => {
+    if (res.status !== 429) return
+    const retry = Number(res.headers.get("Retry-After")) || 10
+    cooldownUntilRef.current = Date.now() + retry * 1000
+  }
+
   const sdkToggle = useCallback(async () => {
     const player = playerRef.current
     if (!player) return
     const state = await player.getCurrentState()
-    if (!state) {
+    // togglePlay() is a local SDK call (no Web API), so it's cheap — use it once started
+    if (state) {
+      await player.togglePlay()
+      return
+    }
+    // first play needs a Web API call to start the context — rate-limited, so guard it
+    if (startingRef.current || Date.now() < cooldownUntilRef.current) return
+    startingRef.current = true
+    try {
       const token = await getValidToken()
       const device = deviceIdRef.current
       if (!token || !device) return
-      await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${device}`, {
+      const res = await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${device}`, {
         method: "PUT",
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
         body: JSON.stringify({ uris: tracks.map((t) => t.uri) }),
       })
-    } else {
-      await player.togglePlay()
+      noteRateLimit(res)
+    } finally {
+      startingRef.current = false
     }
   }, [tracks])
 
   const sdkShuffle = useCallback(async () => {
+    if (Date.now() < cooldownUntilRef.current) return
     const next = !shuffle
     setShuffle(next)
     const token = await getValidToken()
     const device = deviceIdRef.current
     if (!token || !device) return
-    await fetch(`https://api.spotify.com/v1/me/player/shuffle?state=${next}&device_id=${device}`, {
+    const res = await fetch(`https://api.spotify.com/v1/me/player/shuffle?state=${next}&device_id=${device}`, {
       method: "PUT",
       headers: { Authorization: `Bearer ${token}` },
     })
+    noteRateLimit(res)
   }, [shuffle])
 
   // ---- unified controls ----
