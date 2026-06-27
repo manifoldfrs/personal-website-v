@@ -26,12 +26,12 @@ function hash(n: number) {
   return x - Math.floor(x)
 }
 
-// Hot gradient: deep red -> red -> orange -> yellow at the peaks
+// Cool gradient: deep green -> green -> bright green -> pale-mint glow at the peaks
 const STOPS: { at: number; c: readonly [number, number, number] }[] = [
-  { at: 0, c: [96, 12, 24] },
-  { at: 0.45, c: [255, 42, 72] },
-  { at: 0.75, c: [255, 122, 40] },
-  { at: 1, c: [252, 234, 14] },
+  { at: 0, c: [8, 50, 26] },
+  { at: 0.45, c: [34, 197, 94] },
+  { at: 0.75, c: [110, 235, 140] },
+  { at: 1, c: [210, 255, 215] },
 ]
 
 function ramp(level: number): [number, number, number] {
@@ -178,7 +178,7 @@ export function PixelWaves({
             const [cr, cg, cb] = ramp(level)
             ctx.fillStyle = `rgba(${cr | 0}, ${cg | 0}, ${cb | 0}, ${litAlpha})`
           } else {
-            ctx.fillStyle = "rgba(96, 12, 24, 0.12)"
+            ctx.fillStyle = "rgba(18, 64, 36, 0.12)"
           }
           ctx.beginPath()
           ctx.arc(cx, cy, dot / 2, 0, Math.PI * 2)

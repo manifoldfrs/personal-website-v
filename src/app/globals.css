@@ -25,11 +25,11 @@
   --muted: #1e2939;
   --muted-foreground: #6a7282; /* gray-500 */
 
-  /* Superman red accent */
-  --accent: #e60026;
-  --accent-bright: #ff3b52;
-  --accent-muted: #b0001d;
-  --accent-foreground: #ffffff;
+  /* green accent over navy (Mitchell-style) */
+  --accent: #22c55e;
+  --accent-bright: #4ade80;
+  --accent-muted: #16a34a;
+  --accent-foreground: #04210f;
 
   /* Superman yellow, used sparingly */
   --highlight: #fcea0e;
@@ -39,7 +39,7 @@
   --border: #1e2939; /* gray-800 */
   --border-strong: #364153; /* gray-700 */
   --input: #364153;
-  --ring: #e60026;
+  --ring: #22c55e;
   --radius: 0.5rem;
 }
 
