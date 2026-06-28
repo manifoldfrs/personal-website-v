@@ -27,12 +27,11 @@ export async function markdownToHtml(markdown: string): Promise<string> {
 export function extractExcerpt(markdown: string, maxLength = 160): string {
   // Remove frontmatter if present
   const content = markdown.replace(/^---[\s\S]*?---/, "").trim()
-  
-  // Get first paragraph
+
   const paragraphs = content.split(/\n\n/)
   const first = paragraphs[0] ?? ""
   const firstParagraph = first
-    .replace(/[#*_`\[\]]/g, "") // Remove markdown syntax
+    .replace(/[#*_`\[\]]/g, "")
     .replace(/\n/g, " ")
     .trim()
 

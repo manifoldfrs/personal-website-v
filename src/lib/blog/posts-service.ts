@@ -3,7 +3,7 @@
  * Uses @effect/platform-node for file system operations
  */
 
-import { Effect, Data, Duration } from "effect"
+import { Effect, Data } from "effect"
 import { FileSystem } from "@effect/platform"
 import { NodeFileSystem } from "@effect/platform-node"
 import path from "node:path"
@@ -13,9 +13,6 @@ import type { Post, PostSummary } from "./types"
 import { deriveSlugFromFilename } from "./slug"
 import { markdownToHtml, extractExcerpt } from "./markdown"
 
-/**
- * Zod schema for validating frontmatter at runtime
- */
 const frontmatterSchema = z.object({
   title: z.string().min(1, "Title is required"),
   date: z.string(),
@@ -25,7 +22,6 @@ const frontmatterSchema = z.object({
   layout: z.string().optional(),
 })
 
-// Error types
 export class PostNotFoundError extends Data.TaggedError("PostNotFoundError")<{
   slug: string
 }> {}
@@ -40,12 +36,8 @@ export class FileSystemError extends Data.TaggedError("FileSystemError")<{
   path: string
 }> {}
 
-// Posts directory
 const POSTS_DIR = path.join(process.cwd(), "src/content/posts")
 
-/**
- * Get all markdown files from the posts directory using Effect FileSystem
- */
 const getPostFiles: Effect.Effect<
   ReadonlyArray<string>,
   FileSystemError,
@@ -73,9 +65,6 @@ const getPostFiles: Effect.Effect<
     .reverse() // Most recent first
 })
 
-/**
- * Parse a single post file using Effect FileSystem
- */
 const parsePostFile = (
   filename: string
 ): Effect.Effect<Post, ParseError | FileSystemError, FileSystem.FileSystem> =>
@@ -126,9 +115,6 @@ const parsePostFile = (
     } satisfies Post
   })
 
-/**
- * Internal: Get all posts with FileSystem dependency
- */
 const getAllPostsInternal: Effect.Effect<
   ReadonlyArray<PostSummary>,
   ParseError | FileSystemError,
@@ -168,9 +154,6 @@ const getAllPostsInternal: Effect.Effect<
   return posts
 })
 
-/**
- * Internal: Get a single post by slug with FileSystem dependency
- */
 const getPostBySlugInternal = (
   slug: string
 ): Effect.Effect<
@@ -193,9 +176,6 @@ const getPostBySlugInternal = (
     return yield* parsePostFile(matchingFile)
   })
 
-/**
- * Internal: Get all post slugs with FileSystem dependency
- */
 const getAllSlugsInternal: Effect.Effect<
   ReadonlyArray<string>,
   FileSystemError,
@@ -205,41 +185,23 @@ const getAllSlugsInternal: Effect.Effect<
   return files.map(deriveSlugFromFilename)
 })
 
-/**
- * Provide NodeFileSystem layer to an effect
- */
 const withFileSystem = <A, E>(
   effect: Effect.Effect<A, E, FileSystem.FileSystem>
 ): Effect.Effect<A, E> => Effect.provide(effect, NodeFileSystem.layer)
 
-/**
- * Get all posts as summaries (for listing)
- * Cached with 30 second TTL
- */
+/** Get all posts as summaries (for listing) */
 export const getAllPosts: Effect.Effect<
   ReadonlyArray<PostSummary>,
   ParseError | FileSystemError
 > = withFileSystem(getAllPostsInternal)
 
-/**
- * Cached version of getAllPosts with 30s TTL
- */
-export const getAllPostsCached = Effect.cachedWithTTL(
-  getAllPosts,
-  Duration.seconds(30)
-)
-
-/**
- * Get a single post by slug
- */
+/** Get a single post by slug */
 export const getPostBySlug = (
   slug: string
 ): Effect.Effect<Post, PostNotFoundError | ParseError | FileSystemError> =>
   withFileSystem(getPostBySlugInternal(slug))
 
-/**
- * Get all post slugs (for static generation)
- */
+/** Get all post slugs (for static generation) */
 export const getAllSlugs: Effect.Effect<
   ReadonlyArray<string>,
   FileSystemError

@@ -11,31 +11,37 @@ const contactSchema = z.object({
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
+export type ContactState = {
+  status: "idle" | "success" | "error"
+  error?: string
+  values?: { name: string; email: string; message: string }
+}
+
 export async function submitContactForm(
+  _prevState: ContactState,
   formData: FormData
-): Promise<{ success: boolean; error?: string }> {
-  const rawData = {
-    name: formData.get("name"),
-    email: formData.get("email"),
-    message: formData.get("message"),
+): Promise<ContactState> {
+  const values = {
+    name: String(formData.get("name") ?? ""),
+    email: String(formData.get("email") ?? ""),
+    message: String(formData.get("message") ?? ""),
   }
 
-  const result = contactSchema.safeParse(rawData)
+  const result = contactSchema.safeParse(values)
 
   if (!result.success) {
     const errors = result.error.flatten().fieldErrors
     const firstError = Object.values(errors)[0]?.[0]
-    return { success: false, error: firstError || "Invalid form data" }
+    return { status: "error", error: firstError || "Invalid form data", values }
   }
 
   const { name, email, message } = result.data
 
   try {
-    // Check if Resend API key is configured
+    // Without a Resend API key we accept the submission but cannot deliver it.
     if (!process.env.RESEND_API_KEY) {
-      console.log("Contact form submission (no Resend API key configured):")
-      console.log({ name, email, message })
-      return { success: true }
+      console.log("Contact form submission received (no Resend API key configured)")
+      return { status: "success" }
     }
 
     await resend.emails.send({
@@ -52,9 +58,9 @@ ${message}
       replyTo: email,
     })
 
-    return { success: true }
+    return { status: "success" }
   } catch (error) {
     console.error("Failed to send email:", error)
-    return { success: false, error: "Failed to send message. Please try again later." }
+    return { status: "error", error: "Failed to send message. Please try again later.", values }
   }
 }

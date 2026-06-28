@@ -46,6 +46,23 @@ type EmbedData = {
 
 const FALLBACK = fallbackData as unknown as SpotifyTrack[]
 
+// The embed's coverArt can lag for hours after a cover change; the real playlist
+// page's og:image meta updates much sooner, so prefer it for the cover.
+async function fetchPlaylistCover(): Promise<string | null> {
+  try {
+    const res = await fetch(PLAYLIST_URL, {
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; facebookexternalhit/1.1)" },
+      next: { revalidate: REVALIDATE_SECONDS },
+    })
+    if (!res.ok) return null
+    const html = await res.text()
+    const m = html.match(/<meta property="og:image" content="([^"]+)"/)
+    return m?.[1] ?? null
+  } catch {
+    return null
+  }
+}
+
 export async function getPlaylistTracks(): Promise<SpotifyTrack[]> {
   try {
     const res = await fetch(`https://open.spotify.com/embed/playlist/${PLAYLIST_ID}`, {
@@ -64,7 +81,9 @@ export async function getPlaylistTracks(): Promise<SpotifyTrack[]> {
     if (!Array.isArray(list) || list.length === 0) return FALLBACK
 
     const sources = entity?.coverArt?.sources ?? []
-    const cover = sources.length ? sources.reduce((a, b) => (b.width > a.width ? b : a)).url : null
+    const embedCover = sources.length ? sources.reduce((a, b) => (b.width > a.width ? b : a)).url : null
+    // prefer the real page's og:image (fresher), fall back to the embed cover
+    const cover = (await fetchPlaylistCover()) ?? embedCover
 
     const tracks: SpotifyTrack[] = []
     for (const t of list) {

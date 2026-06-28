@@ -1,16 +1,9 @@
 import Link from "next/link"
 import type { PostSummary } from "@/lib/blog"
+import { formatDate } from "@/lib/utils"
 
 interface PostListProps {
   posts: readonly PostSummary[]
-}
-
-function formatDate(dateString: string) {
-  return new Date(dateString).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  })
 }
 
 export function PostList({ posts }: PostListProps) {
@@ -33,7 +26,7 @@ export function PostList({ posts }: PostListProps) {
               dateTime={post.date}
               className="shrink-0 font-mono text-xs tracking-wide text-muted-foreground"
             >
-              {formatDate(post.date)}
+              {formatDate(post.date, "short")}
             </time>
           </Link>
         </li>

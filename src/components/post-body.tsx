@@ -1,18 +1,11 @@
 import Link from "next/link"
+import { formatDate } from "@/lib/utils"
 
 interface PostBodyProps {
   title: string
   date: string
   content: string
   tags?: string[]
-}
-
-function formatDate(dateString: string) {
-  return new Date(dateString).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  })
 }
 
 export function PostBody({ title, date, content, tags }: PostBodyProps) {
