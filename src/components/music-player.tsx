@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 import { createPortal } from "react-dom"
-import { PixelWaves, type Playback, type WaveformData } from "./pixel-waves"
+import { type Playback, type WaveformData } from "./pixel-waves"
 import { beginAuth, disconnect, getValidToken, isConfigured, isConnected } from "@/lib/spotify/auth"
 
 export type Track = {
@@ -135,10 +135,9 @@ const IconNote = (
   </svg>
 )
 
-// red play, yellow hover/active, white icons (matches the logo)
 const CTRL =
-  "flex h-8 w-8 items-center justify-center rounded-full border border-border text-foreground transition-colors hover:border-highlight hover:text-highlight disabled:opacity-30 disabled:hover:border-border disabled:hover:text-foreground"
-const CTRL_ACTIVE = "flex h-8 w-8 items-center justify-center rounded-full border border-highlight text-highlight"
+  "flex h-8 w-8 items-center justify-center rounded-full border border-border text-foreground transition-colors hover:border-accent hover:text-accent disabled:opacity-30 disabled:hover:border-border disabled:hover:text-foreground"
+const CTRL_ACTIVE = "flex h-8 w-8 items-center justify-center rounded-full border border-accent text-accent"
 const PRIMARY =
   "flex h-10 w-10 items-center justify-center rounded-full bg-accent text-accent-foreground transition-colors hover:bg-accent-bright disabled:opacity-40"
 
@@ -483,26 +482,19 @@ export function MusicPlayer({
           context and sit behind page content (-z-10 in the root context). */}
       {mounted &&
         createPortal(
-          <>
-            {/* full-page ambient visualizer (reacts to playback) */}
-            <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 opacity-50">
-              <PixelWaves playbackRef={playbackRef} waveformRef={waveformRef} columns={96} rows={44} />
-            </div>
-            {/* embed audio engine (preview mode): hidden, never moves */}
-            <div aria-hidden className="pointer-events-none fixed bottom-0 right-0 -z-10 h-20 w-[320px] opacity-[0.001]">
-              <div ref={embedHostRef} />
-            </div>
-          </>,
+          <div aria-hidden className="pointer-events-none fixed bottom-0 right-0 -z-10 h-20 w-[320px] opacity-[0.001]">
+            <div ref={embedHostRef} />
+          </div>,
           document.body,
         )}
 
       {/* visible player rail (lives at the top of the sidebar) */}
-      <div className="w-full max-w-[14rem] pl-3.5">
+      <div className="music-rail w-full max-w-[14rem]">
         {/* spinning vinyl disc + track */}
         <div className="flex items-center gap-3">
           <div className="relative h-14 w-14 shrink-0">
             <div
-              className="spin-disc flex h-full w-full items-center justify-center overflow-hidden rounded-full bg-accent text-accent-foreground ring-2 ring-highlight/80 ring-offset-2 ring-offset-background"
+              className="spin-disc flex h-full w-full items-center justify-center overflow-hidden rounded-full bg-accent text-accent-foreground ring-1 ring-border-strong"
               style={{ animationPlayState: isPaused ? "paused" : "running" }}
             >
               {art ? (
@@ -512,8 +504,7 @@ export function MusicPlayer({
                 IconNote
               )}
             </div>
-            {/* spindle hole */}
-            <span className="absolute left-1/2 top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-background ring-1 ring-black/50" />
+
           </div>
           <div className="min-w-0 flex-1">
             <p className="truncate font-sans text-sm font-semibold text-accent">{current?.name ?? "Vibes"}</p>

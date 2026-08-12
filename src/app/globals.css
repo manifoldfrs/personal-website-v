@@ -25,11 +25,11 @@
   --muted: #1e2939;
   --muted-foreground: #6a7282; /* gray-500 */
 
-  /* green accent over navy (Mitchell-style) */
-  --accent: #22c55e;
-  --accent-bright: #4ade80;
-  --accent-muted: #16a34a;
-  --accent-foreground: #04210f;
+  /* restored red accent over navy */
+  --accent: #e60026;
+  --accent-bright: #ff2448;
+  --accent-muted: #b8001f;
+  --accent-foreground: #ffffff;
 
   /* Superman yellow, used sparingly */
   --highlight: #fcea0e;
@@ -39,7 +39,7 @@
   --border: #1e2939; /* gray-800 */
   --border-strong: #364153; /* gray-700 */
   --input: #364153;
-  --ring: #22c55e;
+  --ring: #e60026;
   --radius: 0.5rem;
 }
 
@@ -100,6 +100,116 @@
   }
 }
 
+/* Terminal shell */
+.skip-link {
+  position: fixed;
+  left: 1rem;
+  top: -5rem;
+  z-index: 100;
+  background: var(--accent);
+  color: var(--accent-foreground);
+  padding: 0.65rem 1rem;
+  font-family: var(--font-mono);
+}
+.skip-link:focus { top: 1rem; }
+
+.terminal-layout {
+  width: calc(100% - 2rem);
+  margin-inline: auto;
+  padding-block: 1rem;
+}
+
+.terminal-vinyl-rail {
+  position: absolute;
+  z-index: 2;
+  top: clamp(1.5rem, 4vw, 3rem);
+  right: clamp(1.5rem, 4vw, 3rem);
+  width: 14rem;
+  padding: 1rem;
+}
+
+.terminal-window {
+  position: relative;
+  min-width: 0;
+  min-height: calc(100vh - 2rem);
+  border: 1px solid var(--border-strong);
+  background: var(--background);
+  box-shadow: 0 1.5rem 5rem rgb(0 0 0 / 0.28);
+  display: flex;
+  flex-direction: column;
+}
+
+.terminal-content {
+  flex: 1;
+  width: 100%;
+  padding: clamp(1.5rem, 5vw, 4.5rem);
+}
+
+.terminal-footer {
+  border-top: 1px solid var(--border-strong);
+  font-family: var(--font-mono);
+}
+.terminal-command { position: relative; padding: 0.85rem 1rem; border-bottom: 1px solid var(--border); }
+.terminal-prompt-row { display: flex; align-items: center; gap: 0.65rem; }
+.terminal-prompt { color: var(--accent); white-space: nowrap; }
+.terminal-input { min-width: 0; flex: 1; background: transparent; color: var(--foreground); outline: none; }
+.terminal-input::placeholder { color: var(--muted-foreground); }
+.terminal-output { margin-bottom: 0.75rem; white-space: pre-wrap; color: var(--muted-foreground); font-size: 0.8rem; line-height: 1.7; }
+.terminal-toast {
+  position: absolute;
+  right: 1rem;
+  bottom: calc(100% + 0.75rem);
+  max-width: min(30rem, calc(100vw - 3rem));
+  border: 1px solid var(--accent);
+  background: var(--black);
+  color: var(--foreground);
+  padding: 0.75rem 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.75rem;
+  box-shadow: 0 0.75rem 2rem rgb(0 0 0 / 0.4);
+}
+.terminal-toast button { margin-left: auto; color: var(--accent); font-size: 1.15rem; }
+.contact-error-toast {
+  border: 1px solid var(--accent);
+  background: var(--black);
+  color: var(--foreground);
+  padding: 0.75rem 0.9rem;
+  box-shadow: 0 0.75rem 2rem rgb(0 0 0 / 0.35);
+}
+.terminal-links { display: flex; flex-wrap: wrap; gap: 0.75rem 1.25rem; padding: 0.8rem 1rem; }
+.terminal-links a, .terminal-socials a { color: var(--muted-foreground); transition: color 150ms ease; }
+.terminal-links a:hover, .terminal-links a:focus-visible, .terminal-socials a:hover, .terminal-socials a:focus-visible { color: var(--accent); }
+.terminal-footer-meta { border-top: 1px solid var(--border); padding: 0.65rem 1rem; display: flex; justify-content: space-between; gap: 1rem; font-size: 0.68rem; color: var(--muted-foreground); }
+.terminal-socials { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; }
+.terminal-socials a { display: inline-flex; align-items: center; justify-content: center; }
+
+.terminal-name-art { margin: 0; overflow: hidden; color: var(--primary); font-family: ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, monospace; font-size: clamp(0.44rem, 0.75vw, 0.68rem); font-weight: 700; line-height: 1.15; white-space: pre; }
+.terminal-ascii-fallback { display: none; font-family: var(--font-display); font-weight: 800; font-size: clamp(2rem, 12vw, 4rem); line-height: 0.9; letter-spacing: 0.03em; }
+.terminal-section { margin-top: 3.5rem; }
+.terminal-command-label { margin-bottom: 1.25rem; font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent); letter-spacing: 0.04em; }
+.terminal-more-link { display: inline-block; margin-top: 1.5rem; font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted-foreground); }
+.terminal-more-link:hover { color: var(--accent); }
+.terminal-post-list { border-block: 1px solid var(--border); }
+.terminal-post-list > li + li { border-top: 1px solid var(--border); }
+
+@media (max-width: 900px) {
+  .terminal-layout { width: calc(100% - 1rem); padding-block: 0.5rem; }
+  .terminal-vinyl-rail { position: static; width: auto; border: 0; border-bottom: 1px solid var(--border-strong); padding: 1rem; }
+  .terminal-window { min-height: calc(100vh - 1rem); }
+  .music-rail { max-width: none; }
+  .terminal-content { padding: 1.5rem 1rem 2.5rem; }
+}
+
+@media (max-width: 520px) {
+  .terminal-name-art { display: none; }
+  .terminal-ascii-fallback { display: block; }
+  .terminal-prompt { font-size: 0; }
+  .terminal-prompt::after { content: "$"; font-size: 0.875rem; }
+  .terminal-footer-meta { flex-direction: column; }
+}
+
 /* Spinning vinyl album art for the music player */
 @keyframes spin-disc {
   to {
@@ -109,6 +219,16 @@
 
 .spin-disc {
   animation: spin-disc 8s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .spin-disc { animation: none; }
 }
 
 /* Custom scrollbar */
