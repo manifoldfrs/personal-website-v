@@ -15,8 +15,8 @@ export default async function BlogPage() {
 
   return (
     <div>
-      <h1 className="sr-only">Writing</h1>
-      <PostList posts={posts} />
+      <h1 className="terminal-command-label"><span aria-hidden="true">$</span> ls -lt ~/writing</h1>
+      <div className="terminal-section"><PostList posts={posts} /></div>
     </div>
   )
 }

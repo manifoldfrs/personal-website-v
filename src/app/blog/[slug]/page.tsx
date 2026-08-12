@@ -63,5 +63,5 @@ export default async function BlogPostPage({ params }: PageProps) {
     notFound()
   }
 
-  return <PostBody title={post.title} date={post.date} content={post.content} tags={post.tags} />
+  return <PostBody title={post.title} slug={post.slug} date={post.date} content={post.content} tags={post.tags} />
 }

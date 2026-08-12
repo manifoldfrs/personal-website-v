@@ -3,19 +3,21 @@ import { formatDate } from "@/lib/utils"
 
 interface PostBodyProps {
   title: string
+  slug: string
   date: string
   content: string
   tags?: string[]
 }
 
-export function PostBody({ title, date, content, tags }: PostBodyProps) {
+export function PostBody({ title, slug, date, content, tags }: PostBodyProps) {
   return (
     <article>
-      <header className="mb-10">
+      <p className="terminal-command-label"><span aria-hidden="true">$</span> bat ~/writing/{slug}.md</p>
+      <header className="mb-10 mt-8">
         <time dateTime={date} className="font-mono text-xs tracking-wide text-muted-foreground">
           {formatDate(date)}
         </time>
-        <h1 className="mt-3 font-sans text-3xl font-semibold tracking-tight text-primary md:text-4xl">
+        <h1 className="mt-3 font-mono text-3xl font-semibold tracking-tight text-primary md:text-4xl">
           {title}
         </h1>
         {tags && tags.length > 0 && (

@@ -8,18 +8,18 @@ interface PostListProps {
 
 export function PostList({ posts }: PostListProps) {
   if (posts.length === 0) {
-    return <p className="font-serif text-muted-foreground">Nothing published yet. Check back soon.</p>
+    return <p className="font-mono text-sm text-muted-foreground">total 0 — nothing published yet.</p>
   }
 
   return (
-    <ul className="divide-y divide-border border-b border-border">
+    <ul className="terminal-post-list">
       {posts.map((post) => (
         <li key={post.slug}>
           <Link
             href={`/blog/${post.slug}`}
-            className="group flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-8"
+            className="group grid gap-1 py-4 sm:grid-cols-[1fr_auto] sm:items-baseline sm:gap-8"
           >
-            <span className="font-sans text-lg leading-snug text-foreground transition-colors group-hover:text-accent">
+            <span className="font-mono text-base leading-snug text-foreground transition-colors group-hover:text-accent">
               {post.title}
             </span>
             <time

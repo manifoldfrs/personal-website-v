@@ -4,7 +4,7 @@ import { useActionState } from "react"
 import { submitContactForm, type ContactState } from "./actions"
 
 const inputClass =
-  "w-full rounded-md border border-border bg-black/30 px-4 py-3 font-serif text-foreground placeholder:text-muted-foreground/60 transition-colors focus:border-accent focus:outline-none"
+  "w-full border border-border bg-black/30 px-4 py-3 font-mono text-sm text-foreground placeholder:text-muted-foreground/60 transition-colors focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
 
 const initialState: ContactState = { status: "idle" }
 
@@ -14,9 +14,9 @@ export default function ContactPage() {
 
   return (
     <div className="max-w-xl">
-      <h1 className="sr-only">Contact</h1>
+      <h1 className="terminal-command-label"><span aria-hidden="true">$</span> ./contact</h1>
 
-      <p className="prose mb-10">
+      <p className="prose mb-10 mt-8">
         Want to chat? Send a message and I&apos;ll get back to you.
       </p>
 
@@ -78,7 +78,7 @@ export default function ContactPage() {
         <button
           type="submit"
           disabled={isPending}
-          className="rounded-md bg-accent px-6 py-3 font-mono text-sm uppercase tracking-widest text-accent-foreground transition-colors hover:bg-accent-bright disabled:cursor-not-allowed disabled:opacity-50"
+          className="bg-accent px-6 py-3 font-mono text-sm uppercase tracking-widest text-accent-foreground transition-colors hover:bg-accent-bright disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isPending ? "Sending..." : "Send message"}
         </button>
@@ -89,7 +89,7 @@ export default function ContactPage() {
           </p>
         )}
         {state.status === "error" && state.error && (
-          <p className="font-mono text-sm text-destructive">{state.error}</p>
+          <p role="alert" className="contact-error-toast font-mono text-sm">{state.error}</p>
         )}
       </form>
     </div>
