@@ -194,7 +194,28 @@
 .terminal-post-list { border-block: 1px solid var(--border); }
 .terminal-post-list > li + li { border-top: 1px solid var(--border); }
 
-@media (max-width: 900px) {
+@media (min-width: 1100px) {
+  .terminal-window {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 18rem;
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+  .terminal-vinyl-rail {
+    position: static;
+    grid-column: 2;
+    grid-row: 1;
+    width: auto;
+  }
+  .terminal-content {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .terminal-footer {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 1099px) {
   .terminal-layout { width: calc(100% - 1rem); padding-block: 0.5rem; }
   .terminal-vinyl-rail { position: static; width: auto; border: 0; border-bottom: 1px solid var(--border-strong); padding: 1rem; }
   .terminal-window { min-height: calc(100vh - 1rem); }

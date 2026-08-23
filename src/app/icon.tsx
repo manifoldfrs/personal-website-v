@@ -13,14 +13,15 @@ export default function Icon() {
         style={{
           fontSize: 18,
           fontWeight: 800,
-          color: "#04210f",
-          background: "#22c55e",
+          color: "#fcea0e",
+          background: "#0e121a",
           width: "100%",
           height: "100%",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          borderRadius: "50%",
+          border: "2px solid #e60026",
+          borderRadius: 6,
         }}
       >
         F
