@@ -1,20 +1,22 @@
-import Image from "next/image"
-import type { Metadata } from "next"
+import Image from "next/image";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "About | Faris Habib",
   description: "A bit about Faris Habib.",
-}
+};
 
 export default function AboutPage() {
   return (
     <article className="about-page">
-      <header className="article-header"><h1>About</h1></header>
+      <header className="article-header">
+        <h1>About</h1>
+      </header>
       <div className="prose about-copy">
         <p>
-          My personal website for reflections on everything I&apos;m curious about.
-          I find the most interesting ideas often come from the cross-pollination
-          of different explanations.
+          A place for everything I&apos;m curious about. I find the most of the
+          interesting things in life tend to come from the cross-pollination of
+          different ideas.
         </p>
       </div>
       <figure className="about-photo">
@@ -28,5 +30,5 @@ export default function AboutPage() {
         />
       </figure>
     </article>
-  )
+  );
 }
