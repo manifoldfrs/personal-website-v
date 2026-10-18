@@ -1,71 +1,41 @@
 # hbb.dev
 
-Personal website built with Next.js 16, featuring a dark theme with gold accents.
+Faris Habib's personal website, built with Next.js 16 and a Tokyo Night color palette.
 
-## Tech Stack
+## Stack
 
-- **Framework**: Next.js 16 (App Router)
-- **Styling**: Tailwind CSS v4
-- **Fonts**: JetBrains Mono + Geist Sans
-- **3D**: Three.js with React Three Fiber
-- **Animations**: Framer Motion + Lenis smooth scroll
-- **Blog**: Markdown with Effect.js service layer
-- **Email**: Resend for contact form
-- **Deployment**: Vercel
-
-## Project Structure
-
-```
-src/
-├── app/                    # Next.js App Router pages
-│   ├── page.tsx           # Home
-│   ├── about/             # About page
-│   ├── blog/              # Blog listing + [slug] pages
-│   └── contact/           # Contact form + server action
-├── components/            # React components
-│   ├── hero.tsx           # Hero section with 3D sphere
-│   ├── navbar.tsx         # Navigation
-│   ├── footer.tsx         # Footer with social links
-│   ├── post-list.tsx      # Blog post list
-│   ├── post-body.tsx      # Blog post content
-│   ├── sentient-sphere.tsx # WebGL animated sphere
-│   ├── smooth-scroll.tsx  # Lenis wrapper
-│   └── custom-cursor.tsx  # Custom cursor effect
-├── lib/
-│   └── blog/              # Effect.js blog system
-│       ├── types.ts       # TypeScript types
-│       ├── slug.ts        # Slug utilities
-│       ├── markdown.ts    # Markdown to HTML
-│       ├── posts-service.ts # Effect.js service
-│       └── index.ts       # Public API
-└── content/
-    └── posts/             # Markdown blog posts
-```
+- Next.js App Router, React 19, and strict TypeScript
+- Tailwind CSS v4 and native CSS view transitions
+- Georgia for headings and prose, system monospace for navigation and dates
+- Markdown posts loaded through the Effect-based `src/lib/blog` API
+- A pre-rendered, animated SVG hero and a lossless pixel-art landscape
 
 ## Development
 
 ```bash
-# Install dependencies
 bun install
-
-# Run dev server
 bun run dev
+```
 
-# Build for production
+## Validation
+
+```bash
+bun run lint
+bun x tsc --noEmit
+bun test src/components/site.test.tsx
 bun run build
-
-# Start production server
-bun run start
 ```
 
-## Environment Variables
+## Structure
 
-For the contact form to send emails, set:
+- `src/app`: home, about, writing index, and individual posts
+- `src/components`: navigation, footer, artwork, and post presentation
+- `src/lib/blog`: markdown parsing, frontmatter validation, and post loading
+- `src/content/posts`: published Markdown files
+- `public/images`: site and post artwork
 
-```
-RESEND_API_KEY=your_resend_api_key
-```
+The contact form and Spotify callback are no longer public routes. The site does not load the Spotify player.
 
-## Later
+The hero's facets are precomputed in `public/images/creation-of-adam.svg`; the browser does not need to triangulate the source painting. Its entrance animation runs once and shows a still image when reduced motion is requested.
 
-- Use SolidJS
+Internal links retain normal anchor behavior and deliberately use document navigation to enable native cross-document view transitions. Browsers without that feature navigate normally.

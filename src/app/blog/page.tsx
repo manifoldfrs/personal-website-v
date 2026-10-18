@@ -1,4 +1,4 @@
-import { Effect } from "effect"
+import { Effect, Either } from "effect"
 import type { Metadata } from "next"
 import { PostList } from "@/components/post-list"
 import { getAllPosts } from "@/lib/blog"
@@ -9,14 +9,16 @@ export const metadata: Metadata = {
 }
 
 export default async function BlogPage() {
-  const posts = await Effect.runPromise(
-    getAllPosts.pipe(Effect.orElseSucceed(() => [])),
-  )
+  const result = await Effect.runPromise(Effect.either(getAllPosts))
+
+  if (Either.isLeft(result)) console.error("[blog] Could not load writing", result.left._tag)
 
   return (
-    <div>
-      <h1 className="terminal-command-label"><span aria-hidden="true">$</span> ls -lt ~/writing</h1>
-      <div className="terminal-section"><PostList posts={posts} /></div>
-    </div>
+    <section className="writing-page">
+      <header className="article-header"><h1>Writing</h1></header>
+      {Either.isLeft(result) ? (
+        <p role="alert" className="empty-writing">Could not load writing.</p>
+      ) : <PostList posts={result.right} />}
+    </section>
   )
 }
