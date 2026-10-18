@@ -36,9 +36,7 @@ const getPost = cache(async (slug: string): Promise<Post | null> => {
 })
 
 export async function generateStaticParams() {
-  const slugs = await Effect.runPromise(
-    getAllSlugs.pipe(Effect.orElseSucceed(() => []))
-  )
+  const slugs = await Effect.runPromise(getAllSlugs)
 
   return slugs.map((slug) => ({ slug }))
 }
