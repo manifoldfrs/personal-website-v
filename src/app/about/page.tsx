@@ -9,9 +9,7 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <article className="about-page">
-      <header className="article-header">
-        <h1>About</h1>
-      </header>
+      <header className="article-header"></header>
       <div className="prose about-copy">
         <p>
           A place for everything I&apos;m curious about. I find the most of the
