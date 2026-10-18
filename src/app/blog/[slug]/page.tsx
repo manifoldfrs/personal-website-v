@@ -6,6 +6,9 @@ import { PostBody } from "@/components/post-body"
 import { getAllSlugs, getPostBySlug, PostNotFoundError } from "@/lib/blog"
 import type { Post } from "@/lib/blog"
 
+/** Published posts are generated at build time; unknown slugs must return an HTTP 404. */
+export const dynamicParams = false
+
 interface PageProps {
   params: Promise<{ slug: string }>
 }
@@ -22,7 +25,8 @@ const getPost = cache(async (slug: string): Promise<Post | null> => {
           if (error instanceof PostNotFoundError) {
             return null
           }
-          // Re-throw other errors to be caught by error boundary
+
+          // Let Next.js render the error boundary for non-missing posts.
           throw error
         },
         onSuccess: (post) => post,
@@ -35,6 +39,7 @@ export async function generateStaticParams() {
   const slugs = await Effect.runPromise(
     getAllSlugs.pipe(Effect.orElseSucceed(() => []))
   )
+
   return slugs.map((slug) => ({ slug }))
 }
 
@@ -63,5 +68,5 @@ export default async function BlogPostPage({ params }: PageProps) {
     notFound()
   }
 
-  return <PostBody title={post.title} slug={post.slug} date={post.date} content={post.content} tags={post.tags} />
+  return <PostBody title={post.title} date={post.date} content={post.content} tags={post.tags} />
 }

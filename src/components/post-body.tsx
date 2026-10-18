@@ -1,46 +1,29 @@
-import Link from "next/link"
+import { TransitionLink } from "@/components/transition-link"
 import { formatDate } from "@/lib/utils"
 
 interface PostBodyProps {
-  title: string
-  slug: string
-  date: string
-  content: string
-  tags?: string[]
+  readonly title: string
+  readonly date: string
+  readonly content: string
+  readonly tags?: readonly string[]
 }
 
-export function PostBody({ title, slug, date, content, tags }: PostBodyProps) {
+/** Renders HTML from the trusted repository markdown pipeline. */
+export function PostBody({ title, date, content, tags }: PostBodyProps) {
   return (
-    <article>
-      <p className="terminal-command-label"><span aria-hidden="true">$</span> bat ~/writing/{slug}.md</p>
-      <header className="mb-10 mt-8">
-        <time dateTime={date} className="font-mono text-xs tracking-wide text-muted-foreground">
-          {formatDate(date)}
-        </time>
-        <h1 className="mt-3 font-mono text-3xl font-semibold tracking-tight text-primary md:text-4xl">
-          {title}
-        </h1>
+    <article className="article-page">
+      <header className="article-header">
+        <time dateTime={date} className="article-date">{formatDate(date)}</time>
+        <h1>{title}</h1>
         {tags && tags.length > 0 && (
-          <div className="mt-4 flex flex-wrap gap-x-4 gap-y-1">
-            {tags.map((tag) => (
-              <span key={tag} className="font-mono text-xs text-muted-foreground">
-                #{tag}
-              </span>
-            ))}
-          </div>
+          <ul className="post-tags" aria-label="Tags">
+            {tags.map((tag) => <li key={tag}>#{tag}</li>)}
+          </ul>
         )}
       </header>
-
       <div className="prose" dangerouslySetInnerHTML={{ __html: content }} />
-
-      <div className="mt-14 border-t border-border pt-6">
-        <Link
-          href="/blog"
-          className="group inline-flex items-center gap-2 font-mono text-sm text-muted-foreground transition-colors hover:text-accent"
-        >
-          <span className="transition-transform group-hover:-translate-x-1">←</span>
-          All writing
-        </Link>
+      <div className="article-back">
+        <TransitionLink href="/blog"><span aria-hidden="true">← </span>All writing</TransitionLink>
       </div>
     </article>
   )

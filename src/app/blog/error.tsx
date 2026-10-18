@@ -2,27 +2,18 @@
 
 import { useEffect } from "react"
 
-export default function Error({
-  error,
-  reset,
-}: {
-  error: Error & { digest?: string }
-  reset: () => void
+export default function WritingError({ error, reset }: {
+  readonly error: Error & { digest?: string }
+  readonly reset: () => void
 }) {
   useEffect(() => {
-    console.error(error)
+    console.error("[blog] Rendering failed", error.digest)
   }, [error])
 
   return (
-    <div className="py-8">
-      <p className="display text-5xl text-accent">Oops</p>
-      <p className="mt-4 font-serif text-lg text-muted-foreground">Could not load writing.</p>
-      <button
-        onClick={reset}
-        className="mt-6 rounded-md border border-border px-5 py-2.5 font-mono text-sm text-foreground transition-colors hover:border-accent hover:text-accent"
-      >
-        Try again
-      </button>
-    </div>
+    <section className="status-page">
+      <h1>Could not load writing.</h1>
+      <button onClick={reset} className="retry-button">Try again</button>
+    </section>
   )
 }
