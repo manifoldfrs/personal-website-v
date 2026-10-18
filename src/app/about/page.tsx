@@ -12,7 +12,7 @@ export default function AboutPage() {
       <header className="article-header"></header>
       <div className="prose about-copy">
         <p>
-          A place for everything I&apos;m curious about. I find the most of the
+          A place for everything I&apos;m curious about. I find that the most
           interesting things in life tend to come from the cross-pollination of
           different ideas.
         </p>
