@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "hbb-dev",
+      "name": "heyfar-is",
       "dependencies": {
         "@effect/platform": "^0.77.0",
         "@effect/platform-node": "^0.72.0",

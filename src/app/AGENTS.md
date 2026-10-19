@@ -1,7 +1,7 @@
 # AGENTS.md (src/app)
 
 ## Package Identity
-- Next.js App Router routes, layouts, metadata, and server actions for hbb.dev.
+- Next.js App Router routes, layouts, metadata, and server actions for heyfar.is.
 - Server components by default with client-only islands for interactivity.
 
 ## Setup & Run

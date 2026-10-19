@@ -1,4 +1,4 @@
-# hbb.dev
+# heyfar.is
 
 Faris Habib's personal website, built with Next.js 16 and a Tokyo Night color palette.
 
