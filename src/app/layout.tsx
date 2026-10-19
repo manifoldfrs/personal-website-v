@@ -8,10 +8,10 @@ import "./globals.css"
 export const metadata: Metadata = {
   title: "Faris Habib",
   description: "Faris' personal website",
-  metadataBase: new URL("https://hbb.dev"),
+  metadataBase: new URL("https://heyfar.is"),
   openGraph: {
     title: "Faris Habib",
-    url: "https://hbb.dev",
+    url: "https://heyfar.is",
     siteName: "Faris Habib",
     type: "website",
   },

@@ -78,6 +78,10 @@ web_modules/
 .next
 out
 
+# Wrangler local state and secrets
+.wrangler/
+.dev.vars*
+
 # Nuxt.js build / generate output
 .nuxt
 dist

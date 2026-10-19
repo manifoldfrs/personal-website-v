@@ -54,7 +54,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   return {
     title: `${post.title} | Faris Habib`,
-    description: post.excerpt || `Read ${post.title} on hbb.dev`,
+    description: post.excerpt || `Read ${post.title} on heyfar.is`,
   }
 }
 
