@@ -64,7 +64,9 @@ Railway is a cloud service for hosting applications, much like Cloudflare or Ver
 
 ## Why now?
 
-This is where second-order effects come in. If there's one lesson I've seared into my brain it's that actions, both intended and unintended, have consequences, whether in dating, going about your day, or thinking of long-term company strategies. First, though, let me explain distillation. Distillation means training a smaller LLM on a bigger model's answers (see [my talk a couple years back](/blog/ai-camp-talk) as one such example). AI companies perform distillation on their models all the time when they want to make smaller, cheaper versions. Distillation can turn into an attack when someone does it to a competitor's model, without permission, over and over again.
+This is where second-order effects come in. If there's one lesson I've seared into my brain it's that actions, both intended and unintended, have consequences. Whether in dating, going about your day, or thinking of long-term company strategies. First, though, let me explain distillation.
+
+Distillation means training a smaller LLM on a bigger model's answers (see [my talk a couple years back](/blog/ai-camp-talk) as one such example). AI companies perform distillation on their models all the time when they want to make smaller, cheaper versions. Distillation can turn into an attack when someone does it to a competitor's model, without permission, over and over again.
 
 OpenAI and Anthropic have been fighting distillation attacks hard. In February, [Anthropic named](https://www.anthropic.com/news/detecting-and-preventing-distillation-attacks) Chinese companies running millions of these requests through tens of thousands of fake accounts. And in September, the NSA, CISA, and FBI [put out a joint warning](https://www.nextgov.com/artificial-intelligence/2026/09/intelligence-agencies-warn-chinas-large-scale-ai-model-distillation-efforts/415851/). Finally, this month [Anthropic put out new defenses](https://www.anthropic.com/news/distillation-defenses) to cut how much distillers can harvest by 90 to 99%.
 
