@@ -15,7 +15,7 @@ import { markdownToHtml, extractExcerpt } from "./markdown"
 
 const frontmatterSchema = z.object({
   title: z.string().min(1, "Title is required"),
-  date: z.string(),
+  date: z.coerce.date(),
   categories: z.array(z.string()).optional(),
   tags: z.array(z.string()).optional(),
   excerpt: z.string().optional(),
@@ -59,10 +59,7 @@ const getPostFiles: Effect.Effect<
     )
   )
 
-  return entries
-    .filter((file) => file.endsWith(".md"))
-    .sort()
-    .reverse() // Most recent first
+  return entries.filter((file) => file.endsWith(".md"))
 })
 
 const parsePostFile = (
@@ -105,9 +102,7 @@ const parsePostFile = (
     return {
       slug,
       title: frontmatter.title,
-      date: frontmatter.date
-        ? new Date(frontmatter.date).toISOString()
-        : new Date().toISOString(),
+      date: frontmatter.date.toISOString(),
       excerpt: frontmatter.excerpt ?? extractExcerpt(content),
       tags: tags.filter((t) => t.toLowerCase() !== "posts"), // Filter out "Posts" category
       content: htmlContent,
@@ -151,7 +146,7 @@ const getAllPostsInternal: Effect.Effect<
     )
   }
 
-  return posts
+  return [...posts].sort((a, b) => b.date.localeCompare(a.date))
 })
 
 const getPostBySlugInternal = (

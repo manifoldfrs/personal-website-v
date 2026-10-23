@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Diet & Fitness Plan: May 2024"
-date: 2024-05-26 12:33:07 -0800
+date: 2024-05-26
 categories:
   - Posts
   - Diet

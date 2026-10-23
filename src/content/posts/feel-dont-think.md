@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "It's just a feeling"
-date: 2025-11-29 20:00:00 -0800
+date: 2025-11-29
 categories:
   - Posts
 ---

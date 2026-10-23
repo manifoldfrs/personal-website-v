@@ -39,7 +39,7 @@
 
 ## Common Gotchas
 - `POSTS_DIR` uses `process.cwd()`; run scripts from repo root.
-- Slugs rely on `YYYY-MM-DD-` prefixes per `src/lib/blog/slug.ts`.
+- Slugs are the post filename without `.md` per `src/lib/blog/slug.ts`; posts sort by frontmatter `date`.
 - Use `Effect.orElseSucceed` fallback like `src/app/page.tsx` when running effects in pages.
 
 ## Pre-PR Checks

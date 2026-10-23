@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Talk: BERT for PII Detection"
-date: 2024-02-20 15:23:07 -0800
+date: 2024-02-20
 categories:
   - Talks
   - Dev

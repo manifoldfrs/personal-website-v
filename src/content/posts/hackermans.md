@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Why's everyone getting hacked?"
-date: 2026-10-21 11:00:00 -0800
+date: 2026-10-21
 categories:
   - Posts
 ---

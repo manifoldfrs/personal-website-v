@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "It's not that high agency people are immune to suffering"
-date: 2025-05-18 15:23:07 -0800
+date: 2025-05-18
 categories:
   - Posts
 ---

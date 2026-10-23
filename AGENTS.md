@@ -22,6 +22,7 @@
 - Build production bundle: `bun run build`
 - Start production server: `bun run start`
 - Lint project: `bun run lint`
+- New blog post: `bun run new-post "Title" [slug]`
 - Typecheck: `bun x tsc --noEmit`
 
 ## Primary Validation Commands
@@ -71,8 +72,8 @@
 - Keep thrown error classes narrow and intentional.
 
 ## Content and Markdown Rules
-- Posts must live under `src/content/posts` and follow filename prefix pattern `YYYY-MM-DD-slug.md`.
-- Keep required frontmatter fields present and valid (at least `layout`, `title`, `date`, `categories`).
+- Posts must live under `src/content/posts` as `slug.md`; create them with `bun run new-post "Title" [slug]`.
+- Keep required frontmatter fields present and valid (at least `layout`, `title`, `date` as `YYYY-MM-DD`, `categories`).
 - Maintain markdown structure with clear heading hierarchy.
 - Reference assets from `public/images` using site-root relative paths (no hardcoded external-only shortcuts).
 - Keep post content readable in raw markdown; avoid adding JSX wrappers unless required by markdown renderer behavior.

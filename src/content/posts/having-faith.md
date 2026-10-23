@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Having Faith"
-date: 2025-01-11 20:15:07 -0000
+date: 2025-01-11
 categories:
   - Posts
   - Religion

@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Neo Sparta"
-date: 2024-01-28 15:23:07 -0800
+date: 2024-01-28
 categories:
   - Posts
 ---

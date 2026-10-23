@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 'You live as long as the last person who remembers you'
-date: 2025-08-09 20:00:00 -0800
+date: 2025-08-09
 categories:
   - Posts
 ---

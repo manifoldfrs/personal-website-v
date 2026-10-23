@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Religion & Perspective"
-date: 2024-10-17 20:37:07 -0000
+date: 2024-10-17
 categories:
   - Posts
   - Religion

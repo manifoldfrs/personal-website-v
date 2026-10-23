@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "The future is more exciting than you think"
-date: 2026-06-21 01:00:00 -0800
+date: 2026-06-21
 categories:
   - Posts
 ---

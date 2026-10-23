@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Hackathon: Implementing LLMs-as-Judges"
-date: 2024-09-22 09:11:07 -0800
+date: 2024-09-22
 categories:
   - Posts
   - Dev

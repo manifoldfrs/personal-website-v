@@ -36,7 +36,7 @@ test("static generation returns the published post slugs", async () => {
 
   try {
     await mkdir(join(directory, "src/content/posts"), { recursive: true })
-    await writeFile(join(directory, "src/content/posts/2026-01-02-fixture.md"), "Fixture")
+    await writeFile(join(directory, "src/content/posts/fixture.md"), "Fixture")
     const result = runStaticParams(directory)
 
     assert.equal(result.status, 0, result.stderr)

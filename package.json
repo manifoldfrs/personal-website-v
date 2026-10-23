@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "wrangler dev",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "new-post": "bun scripts/new-post.ts"
   },
   "dependencies": {
     "@effect/platform": "^0.77.0",

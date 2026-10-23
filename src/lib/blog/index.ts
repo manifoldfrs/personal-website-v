@@ -11,5 +11,5 @@ export {
   ParseError,
   FileSystemError,
 } from "./posts-service"
-export { deriveSlugFromFilename, deriveDateFromFilename } from "./slug"
+export { deriveSlugFromFilename } from "./slug"
 export { markdownToHtml, extractExcerpt } from "./markdown"

@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Shaya"
-date: 2024-11-27 20:15:07 -0000
+date: 2024-11-27
 categories:
   - Posts
 ---
