@@ -8,7 +8,7 @@
  * tokens. Those don't expire, unlike OAuth 2.0 user tokens, so they suit CI.
  *
  * Run:  bun scripts/post-to-x.ts src/content/posts/independence.md [...]
- * Env:  X_API_KEY, X_API_SECRET, X_ACCESS_TOKEN, X_ACCESS_TOKEN_SECRET
+ * Env:  X_CONSUMER_KEY, X_CONSUMER_SECRET, X_ACCESS_TOKEN, X_ACCESS_TOKEN_SECRET
  *       DRY_RUN=1 prints the post instead of sending it
  */
 
@@ -43,8 +43,8 @@ function requireEnv(name: string): string {
 const credentials = dryRun
   ? null
   : {
-      apiKey: requireEnv("X_API_KEY"),
-      apiSecret: requireEnv("X_API_SECRET"),
+      consumerKey: requireEnv("X_CONSUMER_KEY"),
+      consumerSecret: requireEnv("X_CONSUMER_SECRET"),
       accessToken: requireEnv("X_ACCESS_TOKEN"),
       accessTokenSecret: requireEnv("X_ACCESS_TOKEN_SECRET"),
     }
@@ -56,7 +56,7 @@ function oauthEncode(value: string): string {
 
 function oauthHeader(method: string, url: string, creds: NonNullable<typeof credentials>): string {
   const params: Record<string, string> = {
-    oauth_consumer_key: creds.apiKey,
+    oauth_consumer_key: creds.consumerKey,
     oauth_nonce: randomBytes(16).toString("hex"),
     oauth_signature_method: "HMAC-SHA1",
     oauth_timestamp: Math.floor(Date.now() / 1000).toString(),
@@ -70,7 +70,7 @@ function oauthHeader(method: string, url: string, creds: NonNullable<typeof cred
     .map((key) => `${oauthEncode(key)}=${oauthEncode(params[key] ?? "")}`)
     .join("&")
   const baseString = [method, oauthEncode(url), oauthEncode(paramString)].join("&")
-  const signingKey = `${oauthEncode(creds.apiSecret)}&${oauthEncode(creds.accessTokenSecret)}`
+  const signingKey = `${oauthEncode(creds.consumerSecret)}&${oauthEncode(creds.accessTokenSecret)}`
   params.oauth_signature = createHmac("sha1", signingKey).update(baseString).digest("base64")
 
   return (
