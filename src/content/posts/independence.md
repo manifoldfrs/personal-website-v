@@ -10,7 +10,7 @@ There are too many people telling you what to think and how to feel these days. 
 
 But I get it, men like to listen to Andrew Tate for the same reason women like to listen to Alex Cooper: they acknowledge the pain you've been through. But just because they're right about the pain doesn't mean they're right about what to do with it. Their influence is even stronger if you've been hurt before. But speaking as someone who has their own baggage, if an influencer, culture, or tribe is convincing you to compromise your values or disrespect others on the basis of shared trauma, you should be very suspicious. Awful people exist yes, but so do good ones, and the way you think shapes who you attract.
 
-Thinking for yourself isn't just about ignoring the bad voices though. Even the ones that mean well like your parents, pastor, or friends can hand you advice or a conclusion you've never actually reached yourself. How could their life experiences match yours? That doesn't mean you shouldn't listen to them though, these people generally mean well and having a counsel you can rely on is amazing. Especially if they challenge your thinking, or push you to grow.
+Thinking for yourself isn't just about ignoring the bad voices though. Even the ones that mean well like your parents, pastor, or friends can hand you advice or a conclusion you've never actually felt or experienced yourself. How could their life experiences match yours? But that doesn't mean you shouldn't listen to them though, these people generally mean well and having a counsel you can rely on is amazing. Especially if they challenge your thinking, or push you to grow.
 
 But the most important voice you should listen to? God. Obviously.
 
