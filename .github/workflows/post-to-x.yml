@@ -1,0 +1,48 @@
+name: Post to X
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "src/content/posts/*.md"
+
+concurrency:
+  group: post-to-x
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          fetch-depth: 0
+
+      # Only added files count as new posts, so edits to published posts never re-post.
+      - name: Find new posts
+        id: new-posts
+        run: |
+          files=$(git diff --diff-filter=A --name-only "${{ github.event.before }}" "${{ github.sha }}" -- "src/content/posts/*.md" | tr "\n" " ")
+          echo "files=$files" >> "$GITHUB_OUTPUT"
+          echo "New posts: ${files:-none}"
+
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        if: steps.new-posts.outputs.files != ''
+
+      - run: bun install --frozen-lockfile
+        if: steps.new-posts.outputs.files != ''
+
+      - name: Post to X
+        if: steps.new-posts.outputs.files != ''
+        env:
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
+          FILES: ${{ steps.new-posts.outputs.files }}
+        # FILES is intentionally unquoted so each path becomes its own argument; post slugs have no spaces.
+        run: bun scripts/post-to-x.ts $FILES

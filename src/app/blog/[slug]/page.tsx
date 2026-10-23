@@ -52,9 +52,22 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     }
   }
 
+  const description = post.excerpt || `Read ${post.title} on heyfar.is`
+
+  // Child openGraph/twitter objects replace the root layout's rather than merging, so restate the shared fields.
   return {
     title: `${post.title} | Faris Habib`,
-    description: post.excerpt || `Read ${post.title} on heyfar.is`,
+    description,
+    alternates: { canonical: `/blog/${slug}` },
+    openGraph: {
+      title: post.title,
+      description,
+      url: `/blog/${slug}`,
+      siteName: "Faris Habib",
+      type: "article",
+      publishedTime: post.date,
+    },
+    twitter: { card: "summary", title: post.title, description },
   }
 }
 
