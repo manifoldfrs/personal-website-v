@@ -5,6 +5,12 @@ on:
     branches: [master]
     paths:
       - "src/content/posts/*.md"
+  workflow_dispatch:
+    inputs:
+      post:
+        description: "Post filename to share, e.g. independence.md"
+        required: true
+        type: string
 
 concurrency:
   group: post-to-x
@@ -25,7 +31,17 @@ jobs:
       # Only added files count as new posts, so edits to published posts never re-post.
       - name: Find new posts
         id: new-posts
+        env:
+          POST: ${{ inputs.post }}
         run: |
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+            if ! [[ "$POST" =~ ^[a-z0-9-]+\.md$ ]] || [ ! -f "src/content/posts/$POST" ]; then
+              echo "::error::No post named '$POST' in src/content/posts"
+              exit 1
+            fi
+            echo "files=src/content/posts/$POST" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           files=$(git diff --diff-filter=A --name-only "${{ github.event.before }}" "${{ github.sha }}" -- "src/content/posts/*.md" | tr "\n" " ")
           echo "files=$files" >> "$GITHUB_OUTPUT"
           echo "New posts: ${files:-none}"
