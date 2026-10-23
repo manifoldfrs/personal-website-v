@@ -17,6 +17,14 @@ bun install
 bun run dev
 ```
 
+## Writing a post
+
+```bash
+bun run new-post "Why's everyone getting hacked?" hackermans
+```
+
+This creates `src/content/posts/hackermans.md` with today's date in its frontmatter. The slug is optional and defaults to one derived from the title. The filename becomes the post's URL (`/blog/hackermans`), so don't rename a post after it's published. Posts are ordered by their `date` (`YYYY-MM-DD`), which is shown as written, with no time or timezone.
+
 ## Validation
 
 ```bash
@@ -31,7 +39,8 @@ bun run build
 - `src/app`: home, about, writing index, and individual posts
 - `src/components`: navigation, footer, artwork, and post presentation
 - `src/lib/blog`: markdown parsing, frontmatter validation, and post loading
-- `src/content/posts`: published Markdown files
+- `src/content/posts`: published Markdown files, one `slug.md` per post
+- `scripts`: the `new-post` generator and music visualizer tooling
 - `public/images`: site and post artwork
 
 The contact form and Spotify callback are no longer public routes. The site does not load the Spotify player.
